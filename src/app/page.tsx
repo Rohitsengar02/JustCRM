@@ -1627,6 +1627,17 @@ export default function UserWebsite() {
                 <p className="text-[10px] text-indigo-350 font-extrabold uppercase tracking-widest">{currentUser.category} • Corporate Account</p>
               </div>
             </div>
+
+            {/* Go to Business Panel Action Button */}
+            <div className="shrink-0">
+              <Link
+                href="/business-panel"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-indigo-650 hover:bg-indigo-700 text-white text-xs font-black rounded-xl transition-all shadow-md shadow-indigo-900/30 hover:scale-102 cursor-pointer border border-indigo-500/30"
+              >
+                <span>Go to Business Panel</span>
+                <span className="text-sm">⚡</span>
+              </Link>
+            </div>
           </div>
         </div>
 
