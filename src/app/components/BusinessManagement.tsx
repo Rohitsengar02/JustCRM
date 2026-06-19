@@ -317,7 +317,6 @@ export default function BusinessManagement() {
                 );
               })}
             </div>
-
             {/* TAB CONTENTS WITH ANIMATIONS */}
             <AnimatePresence mode="wait">
               {detailTab === 'overview' && (
@@ -330,9 +329,35 @@ export default function BusinessManagement() {
                 >
                   {/* About Description */}
                   <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-                    <h3 className="font-bold text-slate-800 text-sm">About / Description</h3>
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-bold text-slate-800 text-sm">About / Description</h3>
+                      <span className="text-[10px] text-slate-400 font-bold">Est. Since 2021</span>
+                    </div>
                     <p className="text-xs text-slate-600 leading-relaxed">{selectedBiz.about}</p>
                     
+                    {/* Attributes */}
+                    <div className="pt-2">
+                      <h4 className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2">Amenities & Key Amenities</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="flex items-center gap-2 text-xs text-slate-600">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Digital Payments Accepted</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-slate-600">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Verified Phone & Email</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-slate-600">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Parking Space Available</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-slate-600">
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-500" />
+                          <span>Wheelchair Accessible Entrance</span>
+                        </div>
+                      </div>
+                    </div>
+
                     {/* Additional Photo Gallery */}
                     <div className="grid grid-cols-2 gap-4 pt-2">
                       <img
@@ -381,33 +406,73 @@ export default function BusinessManagement() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4"
+                  className="space-y-6"
                 >
-                  <h3 className="font-bold text-slate-800 text-sm">Lead Conversion Log</h3>
-                  <p className="text-xs text-slate-400">Leads generated via JustDial dashboard matching algorithms</p>
-                  
-                  <div className="divide-y divide-slate-100">
-                    {bizLeads.map((l) => (
-                      <div key={l.id} className="py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 hover:bg-slate-50/30 px-2 rounded-xl transition-all">
-                        <div>
-                          <p className="font-bold text-xs text-slate-800">{l.userName}</p>
-                          <p className="text-[10px] text-slate-400 mt-0.5">{l.userPhone} • {l.userEmail}</p>
-                          <p className="text-[9px] text-slate-400 mt-1">Source: <strong className="text-slate-600">{l.source}</strong></p>
+                  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 className="font-bold text-slate-800 text-sm">Inbound Conversion Logs</h3>
+                    <p className="text-xs text-slate-400">Leads generated via Meganods dashboard matching algorithms</p>
+                    
+                    <div className="divide-y divide-slate-100">
+                      {bizLeads.map((l) => (
+                        <div key={l.id} className="py-5 space-y-3 hover:bg-slate-50/30 px-2 rounded-xl transition-all">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div>
+                              <p className="font-black text-xs text-slate-850">{l.userName}</p>
+                              <p className="text-[10px] text-slate-400 mt-0.5">{l.userPhone} • {l.userEmail}</p>
+                              <p className="text-[9px] text-slate-400 mt-1">Source: <strong className="text-slate-600">{l.source}</strong></p>
+                            </div>
+                            <div className="flex flex-col items-end gap-1.5">
+                              <span className={`text-[9px] font-extrabold px-2.5 py-1 rounded-full border ${
+                                l.status === 'Converted' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
+                                l.status === 'Lost' ? 'bg-slate-50 text-slate-500 border-slate-100' : 'bg-indigo-50 text-indigo-700 border-indigo-100'
+                              }`}>
+                                {l.status}
+                              </span>
+                              <span className="text-[9px] text-slate-400">{l.createdDate}</span>
+                            </div>
+                          </div>
+
+                          {/* Render Lead Notes */}
+                          {l.notes && l.notes.length > 0 && (
+                            <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl space-y-1">
+                              <p className="text-[9px] uppercase font-bold text-slate-400 tracking-wider">Requirements / Notes</p>
+                              {l.notes.map((note, noteIdx) => (
+                                <p key={noteIdx} className="text-xs text-slate-600 leading-relaxed">"{note}"</p>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Render Call Logs */}
+                          {l.callLogs && l.callLogs.length > 0 && (
+                            <div className="p-3 bg-blue-50/20 border border-blue-100/30 rounded-xl space-y-2">
+                              <p className="text-[9px] uppercase font-bold text-blue-600 tracking-wider">Call Summary Logs</p>
+                              {l.callLogs.map((log, logIdx) => (
+                                <div key={logIdx} className="text-[11px] text-slate-600 flex justify-between gap-4">
+                                  <span>{log.summary}</span>
+                                  <span className="text-[9px] text-slate-400 font-bold shrink-0">{log.duration}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Render Follow Ups */}
+                          {l.followUps && l.followUps.length > 0 && (
+                            <div className="p-3 bg-amber-50/20 border border-amber-100/30 rounded-xl space-y-2">
+                              <p className="text-[9px] uppercase font-bold text-amber-700 tracking-wider">Next Steps / Followups</p>
+                              {l.followUps.map((fu, fuIdx) => (
+                                <div key={fuIdx} className="flex items-center justify-between text-[11px] text-slate-600">
+                                  <span className={fu.done ? 'line-through text-slate-400' : ''}>📅 {fu.task}</span>
+                                  <span className="text-[9px] text-slate-400 font-bold shrink-0">{fu.date}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
-                        <div className="flex flex-col items-end gap-1.5">
-                          <span className={`text-[9px] font-extrabold px-2.5 py-1 rounded-full border ${
-                            l.status === 'Converted' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' :
-                            l.status === 'Lost' ? 'bg-slate-50 text-slate-500 border-slate-100' : 'bg-indigo-50 text-indigo-700 border-indigo-100'
-                          }`}>
-                            {l.status}
-                          </span>
-                          <span className="text-[9px] text-slate-400">{l.createdDate}</span>
-                        </div>
-                      </div>
-                    ))}
-                    {bizLeads.length === 0 && (
-                      <p className="text-xs text-slate-400 py-6 text-center">No matching leads recorded for this listing.</p>
-                    )}
+                      ))}
+                      {bizLeads.length === 0 && (
+                        <p className="text-xs text-slate-400 py-6 text-center">No matching leads recorded for this listing.</p>
+                      )}
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -423,9 +488,9 @@ export default function BusinessManagement() {
                   <h3 className="font-bold text-slate-800 text-sm">Customer Feedback</h3>
                   <div className="divide-y divide-slate-100">
                     {bizReviews.map((rev) => (
-                      <div key={rev.id} className="py-4 space-y-2">
+                      <div key={rev.id} className="py-4 space-y-3.5">
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-xs text-slate-800">{rev.userName}</span>
+                          <span className="font-bold text-xs text-slate-850">{rev.userName}</span>
                           <div className="flex gap-0.5 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-100">
                             {Array.from({ length: Math.round(rev.rating) }).map((_, i) => (
                               <Star key={i} className="w-3 h-3 text-amber-500 fill-amber-500" />
@@ -433,6 +498,15 @@ export default function BusinessManagement() {
                           </div>
                         </div>
                         <p className="text-xs text-slate-600 leading-relaxed italic">"{rev.content}"</p>
+                        
+                        {/* Simulated Admin Response Field */}
+                        <div className="bg-slate-50/50 p-3 rounded-xl border border-slate-100/60 space-y-1.5">
+                          <p className="text-[9px] font-bold uppercase tracking-wider text-slate-450">Admin Response</p>
+                          <p className="text-[11px] text-slate-500 leading-normal">
+                            "Thank you for your valuable feedback. We strive to provide the best user experience on Meganods!"
+                          </p>
+                        </div>
+
                         <div className="flex items-center justify-between pt-1">
                           <span className="text-[9px] text-slate-400">{rev.createdDate}</span>
                           <span className={`text-[9px] font-bold px-2 py-0.5 rounded-md ${

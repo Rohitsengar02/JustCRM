@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Bell, Search, ShieldCheck, Mail, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { Bell, Search, ShieldCheck, Mail, AlertTriangle, CheckCircle, Clock, Menu } from 'lucide-react';
 
-export default function Navbar() {
+export default function Navbar({ onToggleSidebar }: { onToggleSidebar?: () => void }) {
   const { activities, setCurrentTab, businesses, setSelectedBusinessId } = useApp();
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchVal, setSearchVal] = useState('');
@@ -35,12 +35,22 @@ export default function Navbar() {
   return (
     <header className="h-16 bg-white border-b border-slate-200 fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-6">
       {/* Brand Title */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-md shadow-blue-500/10">
-          <ShieldCheck className="w-6 h-6 text-white" />
-        </div>
+      <div className="flex items-center gap-2.5">
+        <button
+          onClick={onToggleSidebar}
+          className="lg:hidden p-2 hover:bg-slate-100 rounded-xl text-slate-650 hover:text-indigo-650 transition-all cursor-pointer"
+          title="Toggle Navigation"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        
+        <img
+          src="/logo.png"
+          className="w-10 h-10 rounded-xl object-contain border border-slate-100 bg-white p-0.5 shadow-md shadow-indigo-650/15"
+          alt="Meganods Logo"
+        />
         <div>
-          <span className="font-bold text-lg text-slate-800 tracking-tight">Justdial</span>
+          <span className="font-black text-base text-slate-800 tracking-tight">Meganods</span>
           <span className="text-xs bg-blue-50 text-blue-600 font-semibold px-2 py-0.5 rounded-full ml-2">Console</span>
         </div>
       </div>

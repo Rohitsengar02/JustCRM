@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Justdial Admin Panel - CRM, Listings & Leads Management",
+  title: "Meganods Admin Panel - CRM, Listings & Leads Management",
   description: "Enterprise-grade admin panel for a local business discovery platform. Manage listings, categories, locations, users, reviews, leads, and advertisements.",
 };
 

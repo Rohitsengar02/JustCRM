@@ -32,7 +32,7 @@ interface SidebarSection {
   items: { name: string; tab: string }[];
 }
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const { currentTab, setCurrentTab, setIsLoggedIn, currentUser, setCurrentUser } = useApp();
   const [expandedSection, setExpandedSection] = useState<string | null>('Business Management');
   const [searchQuery, setSearchQuery] = useState('');
@@ -197,7 +197,7 @@ export default function Sidebar() {
   }).filter(sec => sec.items.length > 0 || sec.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
-    <aside className="w-64 bg-white/95 border-r border-slate-200/80 flex flex-col h-[calc(100vh-64px)] fixed left-0 top-16 z-30 overflow-y-auto backdrop-blur-md shadow-sm">
+    <aside className={`w-64 bg-white/95 border-r border-slate-200/80 flex flex-col h-[calc(100vh-64px)] fixed left-0 top-16 z-30 overflow-y-auto backdrop-blur-md shadow-sm transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
       {/* Search Navigation */}
       <div className="p-4 border-b border-slate-100/85">
         <div className="relative">

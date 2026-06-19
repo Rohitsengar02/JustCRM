@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from './context/AppContext';
 import Login from './components/Login';
 import Navbar from './components/Navbar';
@@ -14,6 +14,12 @@ import OtherPanels from './components/OtherPanels';
 
 export default function Home() {
   const { isLoggedIn, currentTab } = useApp();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Automatically close sidebar when user changes active tab on mobile viewports
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [currentTab]);
 
   if (!isLoggedIn) {
     return <Login />;
@@ -44,15 +50,15 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
       {/* Top Navbar */}
-      <Navbar />
+      <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
       <div className="flex flex-1 pt-16">
         {/* Left Sidebar */}
-        <Sidebar />
+        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
         {/* Main content grid containing: Center Panel, and Right Panel (integrated on large viewports) */}
-        <main className="flex-1 min-w-0 xl:mr-80 pl-64 transition-all">
-          <div className="p-6 max-w-6xl mx-auto pb-12">
+        <main className="flex-1 min-w-0 xl:mr-80 pl-0 lg:pl-64 transition-all">
+          <div className="p-4 sm:p-6 max-w-6xl mx-auto pb-12">
             {renderContent()}
           </div>
         </main>
