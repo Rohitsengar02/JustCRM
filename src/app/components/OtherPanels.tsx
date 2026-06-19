@@ -1146,82 +1146,125 @@ export default function OtherPanels() {
   // SEO GROUP
   // ----------------------------------------------------
   if (currentTab === 'meta-management' || currentTab === 'sitemap' || currentTab === 'url-management' || currentTab === 'schema-generator') {
+    const getSeoTitle = () => {
+      switch (currentTab) {
+        case 'meta-management': return 'SEO Meta Tags Management';
+        case 'sitemap': return 'XML Sitemap Configuration';
+        case 'url-management': return 'URL Redirection Manager';
+        default: return 'Structured Schema Markup Generator';
+      }
+    };
+
+    const getSeoDesc = () => {
+      switch (currentTab) {
+        case 'meta-management': return 'Optimize site-wide title templates and meta descriptions for search visibility';
+        case 'sitemap': return 'Manage automated XML map indexes pinged directly to google indexing bots';
+        case 'url-management': return 'Configure active 301 and 302 redirects to preserve search equity';
+        default: return 'Generate dynamic JSON-LD structured schemas to enable google rich snippets';
+      }
+    };
+
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="font-bold text-slate-800 text-lg">SEO & URL Optimizations</h2>
-          <p className="text-xs text-slate-400 mt-0.5">Optimize directory rankings, structured microdata schemas, URL redirects, and XML sitemaps</p>
+          <h2 className="font-black text-slate-800 text-xl tracking-tight">{getSeoTitle()}</h2>
+          <p className="text-xs text-slate-400 mt-0.5">{getSeoDesc()}</p>
         </div>
 
         {currentTab === 'meta-management' && (
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 max-w-xl">
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5 max-w-2xl">
             <h3 className="font-bold text-slate-800 text-sm">Site-Wide Meta Tags</h3>
-            <div className="space-y-3 text-xs">
+            <div className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-650 mb-1">Global Meta Title</label>
-                <input type="text" defaultValue="LocalHub - Find Local Businesses Near You" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+                <label className="block font-bold text-slate-650 mb-1.5">Global Meta Title Template</label>
+                <input type="text" defaultValue="Meganods - Find Local Businesses Near You" className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
               </div>
               <div>
-                <label className="block font-semibold text-slate-650 mb-1">Global Meta Description</label>
-                <textarea rows={3} defaultValue="Search verified listings, ratings and contact details." className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+                <label className="block font-bold text-slate-650 mb-1.5">Global Meta Description</label>
+                <textarea rows={3} defaultValue="Search verified listings, local business reviews, telephone numbers and service contacts." className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
               </div>
-              <button onClick={() => alert("Saved changes")} className="py-2 px-4 bg-blue-600 text-white font-bold rounded-lg">Save Metadata</button>
+              <button onClick={() => alert("Saved changes")} className="py-2.5 px-5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl text-xs transition-colors cursor-pointer">Save Metadata</button>
             </div>
           </div>
         )}
 
         {currentTab === 'sitemap' && (
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 max-w-xl">
-            <h3 className="font-bold text-slate-800 text-sm">Google XML Sitemap</h3>
-            <div className="p-4 bg-slate-50 rounded-xl text-xs space-y-1">
-              <p>Total URL Indices: <strong>24,536 Pages</strong></p>
-              <p>Last rebuilt: <strong>Today at 12:00 PM</strong></p>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5 max-w-2xl">
+            <h3 className="font-bold text-slate-800 text-sm">Google XML Sitemap Indexer</h3>
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-2">
+              <p className="text-slate-650">Total Crawlable URL Indices: <strong className="text-black">24,536 Pages</strong></p>
+              <p className="text-slate-650">Last automated build: <strong className="text-black">Today at 12:00 PM</strong></p>
+              <p className="text-slate-650">Search Engine Status: <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-md font-bold text-[9px]">Ping Successful</span></p>
             </div>
-            <button onClick={() => { addActivity("Triggered sitemap XML rebuild", "business"); alert("Sitemap rebuild triggered! Check activity feed."); }} className="py-2 px-4 bg-blue-600 text-white font-bold rounded-lg text-xs flex items-center gap-1.5">
-              <RefreshCw className="w-4 h-4" /> Rebuild XML Sitemap
+            <button onClick={() => { addActivity("Triggered sitemap XML rebuild", "business"); alert("Sitemap rebuild triggered! Check activity feed."); }} className="py-2.5 px-5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl text-xs flex items-center gap-1.5 transition-colors cursor-pointer">
+              <RefreshCw className="w-4 h-4 animate-spin-slow" /> Rebuild XML Sitemap
             </button>
           </div>
         )}
 
         {currentTab === 'url-management' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-              <h3 className="font-bold text-slate-800 text-sm">Add 301 SEO URL Redirect</h3>
-              <form onSubmit={handleAddRedirect} className="space-y-3">
-                <input type="text" placeholder="Old Path (e.g. /old-url)" value={redirFrom} onChange={(e) => setRedirFrom(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" required />
-                <input type="text" placeholder="New Path (e.g. /new-url)" value={redirTo} onChange={(e) => setRedirTo(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" required />
-                <button type="submit" className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-lg">Add Redirect Rule</button>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <h3 className="font-bold text-slate-800 text-sm">Create 301 URL Redirect</h3>
+              <form onSubmit={handleAddRedirect} className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Source URL Path</label>
+                  <input type="text" placeholder="/old-category-path" value={redirFrom} onChange={(e) => setRedirFrom(e.target.value)} className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" required />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Destination URL Path</label>
+                  <input type="text" placeholder="/new-category-path" value={redirTo} onChange={(e) => setRedirTo(e.target.value)} className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" required />
+                </div>
+                <button type="submit" className="w-full py-2.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors cursor-pointer">Add Redirect Rule</button>
               </form>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-              <h3 className="font-bold text-slate-800 text-sm">Active 301 URL Rules</h3>
-              <div className="space-y-2">
+            <div className="lg:col-span-7 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <h3 className="font-bold text-slate-800 text-sm">Active Permanent Redirects</h3>
+              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
                 {redirects.map((r, i) => (
-                  <div key={i} className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between text-[11px]">
-                    <span className="font-semibold text-slate-700">{r.from} ➔ {r.to}</span>
-                    <button onClick={() => setRedirects(prev => prev.filter((_, idx) => idx !== i))} className="text-red-500 hover:text-red-700">Delete</button>
+                  <div key={i} className="p-3 bg-slate-55 border border-slate-200 rounded-xl flex items-center justify-between text-xs font-semibold">
+                    <span className="text-slate-700 flex items-center gap-1.5">
+                      <span className="bg-amber-100 text-amber-700 text-[8px] font-black px-1.5 rounded-sm">301</span>
+                      {r.from} ➔ {r.to}
+                    </span>
+                    <button onClick={() => setRedirects(prev => prev.filter((_, idx) => idx !== i))} className="text-rose-600 hover:text-rose-800 font-bold transition-colors cursor-pointer">Delete</button>
                   </div>
                 ))}
+                {redirects.length === 0 && (
+                  <p className="text-xs text-slate-400 text-center py-8">No custom URL redirects active.</p>
+                )}
               </div>
             </div>
           </div>
         )}
 
         {currentTab === 'schema-generator' && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-              <h3 className="font-bold text-slate-800 text-sm">Structured Schema Generator</h3>
-              <form onSubmit={handleGenerateSchema} className="space-y-3">
-                <input type="text" placeholder="Company Name" value={schemaBizName} onChange={(e) => setSchemaBizName(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" required />
-                <input type="text" placeholder="Contact Phone" value={schemaPhone} onChange={(e) => setSchemaPhone(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
-                <input type="text" placeholder="Category" value={schemaCategory} onChange={(e) => setSchemaCategory(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
-                <button type="submit" className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-lg">Generate Schema JSON-LD</button>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <h3 className="font-bold text-slate-800 text-sm">Schema Generator</h3>
+              <form onSubmit={handleGenerateSchema} className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Business / Profile Title</label>
+                  <input type="text" placeholder="e.g. Packers & Movers Delhi" value={schemaBizName} onChange={(e) => setSchemaBizName(e.target.value)} className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" required />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Primary Phone Number</label>
+                  <input type="text" placeholder="+91 99999 88888" value={schemaPhone} onChange={(e) => setSchemaPhone(e.target.value)} className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Primary Category</label>
+                  <input type="text" placeholder="e.g. Moving Company" value={schemaCategory} onChange={(e) => setSchemaCategory(e.target.value)} className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
+                </div>
+                <button type="submit" className="w-full py-2.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors cursor-pointer">Generate Schema JSON-LD</button>
               </form>
             </div>
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
-              <h3 className="font-bold text-slate-800 text-sm">JSON-LD Output</h3>
-              <pre className="p-3 bg-slate-900 text-emerald-400 rounded-xl text-[10px] font-mono overflow-x-auto max-h-[30vh]">
-                {generatedSchema || '// Output code preview will display here...'}
+            <div className="lg:col-span-7 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-bold text-slate-800 text-sm">JSON-LD Snippet Preview</h3>
+                <p className="text-[10px] text-slate-400 mt-0.5">Embed this scripts block in the head of target landing profiles</p>
+              </div>
+              <pre className="p-4 bg-slate-900 text-emerald-400 rounded-2xl text-[10px] font-mono overflow-x-auto max-h-[35vh] leading-relaxed flex-1 mt-3">
+                {generatedSchema || '// Generated JSON-LD output will compile here...'}
               </pre>
             </div>
           </div>
@@ -1244,44 +1287,71 @@ export default function OtherPanels() {
       { name: 'Sun', revenue: 9500, users: 410, leads: 112, businesses: 12 }
     ];
 
+    const getReportTitle = () => {
+      switch (currentTab) {
+        case 'revenue-reports': return 'Platform Revenue Reports';
+        case 'user-reports': return 'User Registration Metrics';
+        case 'lead-reports': return 'Lead Generation Metrics';
+        default: return 'Directory Listings Metrics';
+      }
+    };
+
+    const getReportDesc = () => {
+      switch (currentTab) {
+        case 'revenue-reports': return 'Analyze billing plans purchase, cost renewals and transactional metrics';
+        case 'user-reports': return 'Monitor active portal signups, system sessions and admin accounts growth';
+        case 'lead-reports': return 'Review incoming consumer inquiries conversions and click logs analytics';
+        default: return 'Audit new directory entries submissions and listings status adjustments';
+      }
+    };
+
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="font-bold text-slate-800 text-lg">Platform Analytics Reports ({currentTab})</h2>
-          <p className="text-xs text-slate-400 mt-0.5">Explore platform metrics trends using visual interactive graphs</p>
+          <h2 className="font-black text-slate-800 text-xl tracking-tight">{getReportTitle()}</h2>
+          <p className="text-xs text-slate-400 mt-0.5">{getReportDesc()}</p>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-          <h3 className="font-bold text-slate-800 text-sm mb-4">Metric Progression Graph</h3>
+        <div className="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+            <h3 className="font-bold text-slate-850 text-sm">Progression Curve</h3>
+            <span className="text-[10px] bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200 font-bold">Updated hourly</span>
+          </div>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
               {currentTab === 'revenue-reports' ? (
                 <AreaChart data={reportChartData}>
+                  <defs>
+                    <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.01}/>
+                    </linearGradient>
+                  </defs>
                   <XAxis dataKey="name" fontSize={11} stroke="#94A3B8" />
                   <YAxis fontSize={11} stroke="#94A3B8" />
                   <Tooltip />
-                  <Area type="monotone" dataKey="revenue" stroke="#2563EB" fill="#3B82F6" fillOpacity={0.1} />
+                  <Area type="monotone" dataKey="revenue" stroke="#3b82f6" strokeWidth={3} fill="url(#colorRev)" />
                 </AreaChart>
               ) : currentTab === 'user-reports' ? (
                 <BarChart data={reportChartData}>
                   <XAxis dataKey="name" fontSize={11} stroke="#94A3B8" />
                   <YAxis fontSize={11} stroke="#94A3B8" />
                   <Tooltip />
-                  <Bar dataKey="users" fill="#10B981" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="users" fill="#10b981" radius={[8, 8, 0, 0]} />
                 </BarChart>
               ) : currentTab === 'lead-reports' ? (
                 <LineChart data={reportChartData}>
                   <XAxis dataKey="name" fontSize={11} stroke="#94A3B8" />
                   <YAxis fontSize={11} stroke="#94A3B8" />
                   <Tooltip />
-                  <Line type="monotone" dataKey="leads" stroke="#F59E0B" strokeWidth={2.5} />
+                  <Line type="monotone" dataKey="leads" stroke="#f59e0b" strokeWidth={3.5} dot={{ r: 4 }} />
                 </LineChart>
               ) : (
                 <LineChart data={reportChartData}>
                   <XAxis dataKey="name" fontSize={11} stroke="#94A3B8" />
                   <YAxis fontSize={11} stroke="#94A3B8" />
                   <Tooltip />
-                  <Line type="monotone" dataKey="businesses" stroke="#8B5CF6" strokeWidth={2.5} />
+                  <Line type="monotone" dataKey="businesses" stroke="#8b5cf6" strokeWidth={3.5} dot={{ r: 4 }} />
                 </LineChart>
               )}
             </ResponsiveContainer>
@@ -1295,88 +1365,126 @@ export default function OtherPanels() {
   // CMS GROUP
   // ----------------------------------------------------
   if (currentTab === 'home-page' || currentTab === 'about-page' || currentTab === 'contact-page' || currentTab === 'blogs' || currentTab === 'faqs') {
+    const getCmsTitle = () => {
+      switch (currentTab) {
+        case 'home-page': return 'Home Page Layout Manager';
+        case 'about-page': return 'About Us Editor';
+        case 'contact-page': return 'Contact Page Information';
+        case 'blogs': return 'Blogs & Articles Publishing';
+        default: return 'FAQs Database Coordinator';
+      }
+    };
+
+    const getCmsDesc = () => {
+      switch (currentTab) {
+        case 'home-page': return 'Configure headlines and search parameters displayed on the homepage';
+        case 'about-page': return 'Edit static about narratives and corporate description sections';
+        case 'contact-page': return 'Configure support channels and physical address placeholders';
+        case 'blogs': return 'Compose and edit local industry news, tutorials and SEO blogs';
+        default: return 'Coordinate community frequently asked questions list';
+      }
+    };
+
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="font-bold text-slate-800 text-lg">Content Management System (CMS)</h2>
-          <p className="text-xs text-slate-400 mt-0.5">Control visual page configurations, write blogs, and edit FAQ lists</p>
+          <h2 className="font-black text-slate-800 text-xl tracking-tight">{getCmsTitle()}</h2>
+          <p className="text-xs text-slate-400 mt-0.5">{getCmsDesc()}</p>
         </div>
 
         {currentTab === 'home-page' && (
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 max-w-xl">
-            <h3 className="font-bold text-slate-800 text-sm">Homepage Hero Editor</h3>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 max-w-2xl">
+            <h3 className="font-bold text-slate-800 text-sm">Hero Section Headline Editor</h3>
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-650 mb-1">Headline Text Title</label>
-                <input type="text" defaultValue="Search Local Businesses, Packers & Dentists" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+                <label className="block font-bold text-slate-650 mb-1.5">Hero Title Headline</label>
+                <input type="text" defaultValue="Search Local Businesses, Packers & Dentists" className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
               </div>
-              <button onClick={() => alert("Homepage updated")} className="py-2 px-4 bg-blue-600 text-white font-bold rounded-lg">Save Layout</button>
+              <button onClick={() => alert("Homepage updated")} className="py-2.5 px-5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl text-xs transition-colors cursor-pointer">Save Layout</button>
             </div>
           </div>
         )}
 
         {(currentTab === 'about-page' || currentTab === 'contact-page') && (
-          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4 max-w-xl">
-            <h3 className="font-bold text-slate-800 text-sm">{currentTab === 'about-page' ? 'About Us Page Content' : 'Contact Support Details'}</h3>
+          <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4 max-w-2xl">
+            <h3 className="font-bold text-slate-800 text-sm">{currentTab === 'about-page' ? 'About Us Content' : 'Contact Support Details'}</h3>
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block font-semibold text-slate-650 mb-1">Rich Text Paragraph Content</label>
-                <textarea rows={6} defaultValue="LocalHub is India's leading business directory platform, connecting consumers with local service providers." className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+                <label className="block font-bold text-slate-650 mb-1.5">Rich Text Paragraph Content</label>
+                <textarea rows={6} defaultValue="Meganods is India's leading business directory platform, connecting consumers with local service providers." className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black leading-relaxed" />
               </div>
-              <button onClick={() => alert("Page content saved")} className="py-2 px-4 bg-blue-600 text-white font-bold rounded-lg">Save Changes</button>
+              <button onClick={() => alert("Page content saved")} className="py-2.5 px-5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl text-xs transition-colors cursor-pointer">Save Changes</button>
             </div>
           </div>
         )}
 
         {currentTab === 'blogs' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-              <h3 className="font-bold text-slate-800 text-sm">Write Blog Post</h3>
-              <form onSubmit={handleAddBlog} className="space-y-3">
-                <input type="text" placeholder="Blog Title" value={newBlogTitle} onChange={(e) => setNewBlogTitle(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" required />
-                <input type="text" placeholder="Author Name" value={newBlogAuthor} onChange={(e) => setNewBlogAuthor(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
-                <button type="submit" className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-lg">Publish Article</button>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <h3 className="font-bold text-slate-800 text-sm">Write Blog Article</h3>
+              <form onSubmit={handleAddBlog} className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Article Title</label>
+                  <input type="text" placeholder="e.g. Top 10 Plumbers in Bangalore" value={newBlogTitle} onChange={(e) => setNewBlogTitle(e.target.value)} className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" required />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Author</label>
+                  <input type="text" placeholder="e.g. Rohit Sengar" value={newBlogAuthor} onChange={(e) => setNewBlogAuthor(e.target.value)} className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
+                </div>
+                <button type="submit" className="w-full py-2.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors cursor-pointer">Publish Article</button>
               </form>
             </div>
-            <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div className="lg:col-span-7 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
               <h3 className="font-bold text-slate-800 text-sm">Published Directory Blogs</h3>
-              <div className="space-y-2">
+              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
                 {blogs.map((b) => (
-                  <div key={b.id} className="p-3 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between text-xs">
+                  <div key={b.id} className="p-3 bg-slate-55 border border-slate-200 rounded-xl flex items-center justify-between text-xs font-semibold">
                     <div>
                       <strong className="text-slate-800">{b.title}</strong>
-                      <p className="text-[10px] text-slate-400 mt-0.5">By {b.author} on {b.date}</p>
+                      <p className="text-[10px] text-slate-400 font-bold mt-0.5">By {b.author} on {b.date}</p>
                     </div>
-                    <button onClick={() => setBlogs(prev => prev.filter(bl => bl.id !== b.id))} className="text-red-500 hover:text-red-700 text-xs font-bold">Delete</button>
+                    <button onClick={() => setBlogs(prev => prev.filter(bl => bl.id !== b.id))} className="text-rose-600 hover:text-rose-800 font-bold transition-colors cursor-pointer">Delete</button>
                   </div>
                 ))}
+                {blogs.length === 0 && (
+                  <p className="text-xs text-slate-400 text-center py-8">No articles published yet.</p>
+                )}
               </div>
             </div>
           </div>
         )}
 
         {currentTab === 'faqs' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div className="lg:col-span-5 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
               <h3 className="font-bold text-slate-800 text-sm">Add Directory FAQ</h3>
-              <form onSubmit={handleAddFaq} className="space-y-3">
-                <input type="text" placeholder="Question Text" value={newFaqQ} onChange={(e) => setNewFaqQ(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" required />
-                <textarea rows={3} placeholder="Answer Content" value={newFaqA} onChange={(e) => setNewFaqA(e.target.value)} className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" required />
-                <button type="submit" className="w-full py-2 bg-blue-600 text-white text-xs font-bold rounded-lg">Publish FAQ</button>
+              <form onSubmit={handleAddFaq} className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Question Text</label>
+                  <input type="text" placeholder="e.g. How do I verify my listing?" value={newFaqQ} onChange={(e) => setNewFaqQ(e.target.value)} className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" required />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Answer Content</label>
+                  <textarea rows={3} placeholder="Provide descriptive answer..." value={newFaqA} onChange={(e) => setNewFaqA(e.target.value)} className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black leading-relaxed" required />
+                </div>
+                <button type="submit" className="w-full py-2.5 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl transition-colors cursor-pointer">Publish FAQ</button>
               </form>
             </div>
-            <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+            <div className="lg:col-span-7 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
               <h3 className="font-bold text-slate-800 text-sm">System FAQ Catalog</h3>
-              <div className="space-y-2">
+              <div className="space-y-3.5 max-h-[300px] overflow-y-auto pr-1">
                 {faqs.map((f) => (
-                  <div key={f.id} className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1 text-xs">
-                    <div className="flex justify-between items-center font-bold text-slate-800">
-                      <span>Q: {f.question}</span>
-                      <button onClick={() => setFaqs(prev => prev.filter(faq => faq.id !== f.id))} className="text-red-500 hover:text-red-700 font-bold">Delete</button>
+                  <div key={f.id} className="p-4 bg-slate-55 border border-slate-200 rounded-2xl space-y-2 text-xs">
+                    <div className="flex justify-between items-start font-bold text-slate-800 gap-2">
+                      <span className="leading-snug">Q: {f.question}</span>
+                      <button onClick={() => setFaqs(prev => prev.filter(faq => faq.id !== f.id))} className="text-rose-600 hover:text-rose-800 font-bold shrink-0 transition-colors cursor-pointer">Delete</button>
                     </div>
-                    <p className="text-slate-600 text-[11px] leading-relaxed">A: {f.answer}</p>
+                    <p className="text-slate-500 font-semibold text-[11px] leading-relaxed">A: {f.answer}</p>
                   </div>
                 ))}
+                {faqs.length === 0 && (
+                  <p className="text-xs text-slate-400 text-center py-8">No FAQ items published.</p>
+                )}
               </div>
             </div>
           </div>
@@ -1401,53 +1509,125 @@ export default function OtherPanels() {
       }, 2500);
     };
 
+    const getCampaignTitle = () => {
+      switch (currentTab) {
+        case 'push-notifications': return 'App Push Notification Campaigns';
+        case 'email-campaigns': return 'Email Newsletter Campaigns';
+        default: return 'SMS Marketing Campaigns';
+      }
+    };
+
+    const getCampaignDesc = () => {
+      switch (currentTab) {
+        case 'push-notifications': return 'Trigger dynamic push alerts targeting active user devices';
+        case 'email-campaigns': return 'Dispatch bulk rich email newsletters to subscribed business partners';
+        default: return 'Send high-impact transactional SMS text campaigns directly to consumer mobile numbers';
+      }
+    };
+
     return (
-      <div className="space-y-6 max-w-xl mx-auto">
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
-          <div>
-            <h2 className="font-bold text-slate-800 text-base">Campaign Blaster Dispatcher ({currentTab})</h2>
-            <p className="text-xs text-slate-400 mt-0.5">Send bulk announcements to target active directory users</p>
+      <div className="space-y-6">
+        <div>
+          <h2 className="font-black text-slate-800 text-xl tracking-tight">{getCampaignTitle()}</h2>
+          <p className="text-xs text-slate-400 mt-0.5">{getCampaignDesc()}</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Dispatcher Form */}
+          <div className="lg:col-span-7 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+            <h3 className="font-bold text-slate-850 text-sm">Campaign Blaster Dispatcher</h3>
+            
+            {notifSent && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs p-3.5 rounded-xl flex items-center gap-2 font-semibold"
+              >
+                <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Marketing campaign successfully queued and dispatched!</span>
+              </motion.div>
+            )}
+
+            <form onSubmit={handleSendBlast} className="space-y-4">
+              <div>
+                <label className="block text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-1.5">Subject / Headline Title</label>
+                <input
+                  type="text"
+                  value={notifTitle}
+                  onChange={(e) => setNotifTitle(e.target.value)}
+                  placeholder="e.g. Need Packers & Movers? Relocate with experts!"
+                  className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-1.5">Campaign Message Body</label>
+                <textarea
+                  rows={4}
+                  value={notifBody}
+                  onChange={(e) => setNotifBody(e.target.value)}
+                  placeholder="Type promotional body content here..."
+                  className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black leading-relaxed"
+                  required
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 bg-slate-900 hover:bg-black text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+              >
+                <Send className="w-3.5 h-3.5" /> <span>Deploy Live Campaign Blast</span>
+              </button>
+            </form>
           </div>
 
-          {notifSent && (
-            <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs p-3 rounded-lg flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-emerald-600" />
-              <span>Blast dispatched successfully!</span>
-            </div>
-          )}
+          {/* Smartphone Mockup Live Preview */}
+          <div className="lg:col-span-5 flex flex-col items-center justify-center">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Live Device Mockup Preview</span>
+            <div className="relative w-64 h-[440px] bg-slate-950 border-4 border-slate-800 rounded-[36px] shadow-xl overflow-hidden p-3 flex flex-col justify-between">
+              {/* Camera Notch */}
+              <div className="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-4 bg-slate-800 rounded-full z-20" />
+              
+              {/* Home Screen Simulated Content */}
+              <div className="relative flex-1 bg-slate-900 rounded-[28px] overflow-hidden p-3 pt-6 flex flex-col justify-start space-y-4">
+                <div className="flex justify-between items-center text-[8px] text-white/50 px-1 font-bold">
+                  <span>9:41 AM</span>
+                  <div className="flex items-center gap-1">
+                    <span>5G</span>
+                    <span className="w-3 h-1.5 bg-white/50 rounded-xs" />
+                  </div>
+                </div>
 
-          <form onSubmit={handleSendBlast} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Headline / Subject Title</label>
-              <input
-                type="text"
-                value={notifTitle}
-                onChange={(e) => setNotifTitle(e.target.value)}
-                placeholder="e.g. Relocating soon? Check verified Packers & Movers!"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs"
-                required
-              />
-            </div>
+                {/* Live Notification Bubble */}
+                <AnimatePresence>
+                  {(notifTitle || notifBody) && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -20, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.9 }}
+                      className="bg-white/95 backdrop-blur-md p-2.5 rounded-2xl shadow-lg border border-white/20 text-black text-left flex gap-2 items-start"
+                    >
+                      <div className="w-6 h-6 rounded-lg bg-slate-900 flex items-center justify-center text-[10px] text-white font-bold shrink-0">
+                        M
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[8px] font-black text-slate-800">Meganods</span>
+                          <span className="text-[7px] text-slate-400">now</span>
+                        </div>
+                        <p className="text-[9px] font-bold text-slate-900 truncate mt-0.5">{notifTitle || 'Notification Subject'}</p>
+                        <p className="text-[8px] text-slate-600 line-clamp-2 mt-0.5 leading-tight">{notifBody || 'This is where your campaign message content will display dynamically...'}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-600 mb-1">Message Body</label>
-              <textarea
-                rows={4}
-                value={notifBody}
-                onChange={(e) => setNotifBody(e.target.value)}
-                placeholder="Type your message content here..."
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs"
-                required
-              />
+              {/* Home Indicator Bar */}
+              <div className="w-20 h-1 bg-slate-750 mx-auto rounded-full mt-1 shrink-0" />
             </div>
-
-            <button
-              type="submit"
-              className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-1.5 transition-all shadow-sm"
-            >
-              <Send className="w-3.5 h-3.5" /> <span>Deploy Live Blast</span>
-            </button>
-          </form>
+          </div>
         </div>
       </div>
     );
@@ -1469,37 +1649,37 @@ export default function OtherPanels() {
     return (
       <div className="space-y-6">
         <div>
-          <h2 className="font-bold text-slate-800 text-lg">Support Ticket Workspace</h2>
+          <h2 className="font-black text-slate-800 text-xl tracking-tight">Support Ticket Workspace</h2>
           <p className="text-xs text-slate-400 mt-0.5">Solve business complaints, resolve escalation logs, and interact with operators</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Ticket list */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 space-y-3">
-            <h3 className="font-bold text-slate-800 text-sm">Tickets Directory</h3>
-            <div className="space-y-2 max-h-[60vh] overflow-y-auto">
+          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-5 space-y-4">
+            <h3 className="font-bold text-slate-850 text-sm">Tickets Directory</h3>
+            <div className="space-y-2.5 max-h-[60vh] overflow-y-auto pr-1">
               {tickets.map(t => (
                 <div
                   key={t.id}
                   onClick={() => setActiveTicketId(t.id)}
-                  className={`p-3 border rounded-xl cursor-pointer transition-all ${
+                  className={`p-3.5 border rounded-2xl cursor-pointer transition-all ${
                     activeTicketId === t.id 
-                      ? 'border-blue-500 bg-blue-50/10' 
-                      : 'border-slate-100 bg-white hover:bg-slate-50/50'
+                      ? 'border-black bg-slate-50' 
+                      : 'border-slate-200 bg-white hover:bg-slate-50/50'
                   }`}
                 >
-                  <div className="flex justify-between items-center text-[10px] text-slate-400 mb-1">
+                  <div className="flex justify-between items-center text-[10px] text-slate-400 mb-1 font-bold">
                     <span>{t.id}</span>
-                    <span className={`px-1.5 rounded-sm font-bold ${
-                      t.priority === 'High' ? 'bg-red-50 text-red-600' : 'bg-slate-100 text-slate-650'
+                    <span className={`px-1.5 py-0.5 rounded-md font-bold ${
+                      t.priority === 'High' ? 'bg-rose-50 text-rose-700 border border-rose-100' : 'bg-slate-100 text-slate-600 border border-slate-200'
                     }`}>{t.priority}</span>
                   </div>
                   <h4 className="text-xs font-bold text-slate-800 truncate">{t.title}</h4>
-                  <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-100 text-[10px]">
+                  <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-slate-100 text-[10px] font-bold">
                     <span className="text-slate-500">{t.userName}</span>
-                    <span className={`font-semibold ${
-                      t.status === 'Open' ? 'text-indigo-600' :
-                      t.status === 'In Progress' ? 'text-amber-500' : 'text-emerald-600'
+                    <span className={`font-bold ${
+                      t.status === 'Open' ? 'text-indigo-650' :
+                      t.status === 'In Progress' ? 'text-amber-600' : 'text-emerald-700'
                     }`}>{t.status}</span>
                   </div>
                 </div>
@@ -1508,18 +1688,18 @@ export default function OtherPanels() {
           </div>
 
           {/* Ticket details / conversation */}
-          <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-col justify-between h-[65vh]">
+          <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between h-[65vh]">
             {activeTicket ? (
               <>
-                <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
+                <div className="border-b border-slate-200 pb-4 flex items-center justify-between">
                   <div>
-                    <h4 className="font-bold text-slate-800 text-sm">{activeTicket.title}</h4>
-                    <p className="text-[10px] text-slate-400 mt-0.5">Created by {activeTicket.userName} ({activeTicket.userRole})</p>
+                    <h4 className="font-black text-slate-800 text-sm">{activeTicket.title}</h4>
+                    <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Created by {activeTicket.userName} ({activeTicket.userRole})</p>
                   </div>
                   <select
                     value={activeTicket.status}
                     onChange={(e) => updateTicketStatus(activeTicket.id, e.target.value as any)}
-                    className="px-2 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none"
+                    className="px-2 py-1.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:border-black text-black"
                   >
                     <option value="Open">Open</option>
                     <option value="In Progress">In Progress</option>
@@ -1530,27 +1710,27 @@ export default function OtherPanels() {
 
                 <div className="flex-1 overflow-y-auto my-4 space-y-3.5 pr-2">
                   {activeTicket.comments.map((c, idx) => (
-                    <div key={idx} className="p-3 bg-slate-50 rounded-xl space-y-1">
-                      <div className="flex justify-between items-center text-[10px]">
-                        <span className="font-bold text-slate-700">{c.author}</span>
-                        <span className="text-slate-400">{c.date}</span>
+                    <div key={idx} className="p-3.5 bg-slate-55 border border-slate-200 rounded-2xl space-y-1 text-xs font-semibold">
+                      <div className="flex justify-between items-center text-[10px] text-slate-400 font-bold">
+                        <span className="text-slate-700">{c.author}</span>
+                        <span>{c.date}</span>
                       </div>
-                      <p className="text-xs text-slate-650 font-medium leading-normal">{c.text}</p>
+                      <p className="text-slate-650 leading-relaxed">{c.text}</p>
                     </div>
                   ))}
                 </div>
 
-                <form onSubmit={handleCommentSubmit} className="flex gap-2 border-t border-slate-100 pt-3">
+                <form onSubmit={handleCommentSubmit} className="flex gap-2 border-t border-slate-200 pt-4">
                   <input
                     type="text"
-                    placeholder="Type official operator response..."
+                    placeholder="Type official support reply..."
                     value={commentInput}
                     onChange={(e) => setCommentInput(e.target.value)}
-                    className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:bg-white"
+                    className="flex-1 px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold"
+                    className="px-4 py-2.5 bg-slate-900 hover:bg-black text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
                   >
                     Reply
                   </button>
@@ -1558,8 +1738,8 @@ export default function OtherPanels() {
               </>
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-slate-400 space-y-2">
-                <LifeBuoy className="w-10 h-10 stroke-1" />
-                <p className="text-xs">Select a support ticket from the list to begin audit resolution</p>
+                <LifeBuoy className="w-10 h-10 stroke-1 animate-spin-slow" />
+                <p className="text-xs font-bold">Select a support ticket to start resolution workspace</p>
               </div>
             )}
           </div>
@@ -1571,128 +1751,155 @@ export default function OtherPanels() {
   // ----------------------------------------------------
   // SETTINGS GROUP
   // ----------------------------------------------------
+  const getSettingsTitle = () => {
+    switch (currentTab) {
+      case 'general-settings': return 'General Application Settings';
+      case 'branding-settings': return 'Brand Assets & Colors';
+      case 'gateway-settings': return 'Payment Gateways Integrations';
+      case 'email-settings': return 'SMTP Mail Server Credentials';
+      case 'sms-settings': return 'SMS Gateway Client Settings';
+      default: return 'Developer API Key Manager';
+    }
+  };
+
+  const getSettingsDesc = () => {
+    switch (currentTab) {
+      case 'general-settings': return 'Adjust directory app title metadata and administrator email coordinates';
+      case 'branding-settings': return 'Modify primary brand elements and live styling themes';
+      case 'gateway-settings': return 'Control Razorpay live credentials and webhook signatures';
+      case 'email-settings': return 'Configure SMTP host paths and verification port coordinates';
+      case 'sms-settings': return 'Edit messaging gateway provider parameters';
+      default: return 'Provision security API keys for mobile clients and external developers';
+    }
+  };
+
   return (
-    <div className="space-y-6 max-w-xl mx-auto">
-      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+    <div className="space-y-6 max-w-2xl mx-auto">
+      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-5">
         <div>
-          <h2 className="font-bold text-slate-800 text-base">Console Configuration ({currentTab})</h2>
-          <p className="text-xs text-slate-400 mt-0.5">Control security keys, payment gateway details, SMTP servers and theme variables</p>
+          <h2 className="font-black text-slate-800 text-xl tracking-tight">{getSettingsTitle()}</h2>
+          <p className="text-xs text-slate-400 mt-0.5">{getSettingsDesc()}</p>
         </div>
 
         {/* General Settings */}
         {currentTab === 'general-settings' && (
-          <div className="space-y-3 text-xs">
+          <div className="space-y-4 text-xs font-semibold">
             <div>
-              <label className="block font-semibold text-slate-650 mb-1">Company / App Name</label>
-              <input type="text" defaultValue="Meganods Discovery Ltd" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="block font-bold text-slate-650 mb-1.5">Company / App Name</label>
+              <input type="text" defaultValue="Meganods Discovery Ltd" className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
             </div>
             <div>
-              <label className="block font-semibold text-slate-650 mb-1">Admin Email Coordinator</label>
-              <input type="email" defaultValue="coordinator@localhub.com" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="block font-bold text-slate-650 mb-1.5">Admin Email Coordinator</label>
+              <input type="email" defaultValue="coordinator@localhub.com" className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
             </div>
-            <button onClick={() => alert("Settings saved")} className="py-2 px-4 bg-blue-600 text-white font-bold rounded-lg">Save Settings</button>
+            <button onClick={() => alert("Settings saved")} className="py-2.5 px-5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl transition-colors cursor-pointer mt-2">Save Settings</button>
           </div>
         )}
 
         {/* Branding settings */}
         {currentTab === 'branding-settings' && (
-          <div className="space-y-3 text-xs">
+          <div className="space-y-4 text-xs font-semibold">
             <div>
-              <label className="block font-semibold text-slate-650 mb-1">Primary Color HEX</label>
+              <label className="block font-bold text-slate-650 mb-1.5">Primary Color HEX</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={primaryBrandColor}
                   onChange={(e) => setPrimaryBrandColor(e.target.value)}
-                  className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs flex-1"
+                  className="px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black flex-1"
                 />
-                <span className="w-9 h-9 rounded-lg border border-slate-200" style={{ backgroundColor: primaryBrandColor }} />
+                <span className="w-10 h-10 rounded-xl border border-slate-200 shrink-0" style={{ backgroundColor: primaryBrandColor }} />
               </div>
             </div>
-            <button onClick={() => alert("Theme modified")} className="py-2 px-4 bg-blue-600 text-white font-bold rounded-lg">Update Brand Colors</button>
+            <button onClick={() => alert("Theme modified")} className="py-2.5 px-5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl transition-colors cursor-pointer mt-2">Update Brand Colors</button>
           </div>
         )}
 
         {/* Gateway settings */}
         {currentTab === 'gateway-settings' && (
-          <div className="space-y-3 text-xs">
+          <div className="space-y-4 text-xs font-semibold">
             <div>
-              <label className="block font-semibold text-slate-650 mb-1">Razorpay API Key ID</label>
-              <input type="text" defaultValue="rzp_live_90as8d9021a" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="block font-bold text-slate-650 mb-1.5">Razorpay API Key ID</label>
+              <input type="text" defaultValue="rzp_live_90as8d9021a" className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
             </div>
             <div>
-              <label className="block font-semibold text-slate-650 mb-1">Razorpay Key Secret</label>
-              <input type="password" value="••••••••••••••••••••••••" readOnly className="w-full px-3 py-2 bg-slate-55 border border-slate-200 rounded-lg text-xs" />
+              <label className="block font-bold text-slate-650 mb-1.5">Razorpay Key Secret</label>
+              <input type="password" value="••••••••••••••••••••••••" readOnly className="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold cursor-not-allowed text-slate-400" />
             </div>
-            <button onClick={() => alert("Gateway updated")} className="py-2 px-4 bg-blue-600 text-white font-bold rounded-lg">Save Gateway Keys</button>
+            <button onClick={() => alert("Gateway updated")} className="py-2.5 px-5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl transition-colors cursor-pointer mt-2">Save Gateway Keys</button>
           </div>
         )}
 
         {/* Email settings */}
         {currentTab === 'email-settings' && (
-          <div className="space-y-3 text-xs">
+          <div className="space-y-4 text-xs font-semibold">
             <div>
-              <label className="block font-semibold text-slate-650 mb-1">SMTP Server Host</label>
-              <input type="text" defaultValue="smtp.secureserver.net" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="block font-bold text-slate-650 mb-1.5">SMTP Server Host</label>
+              <input type="text" defaultValue="smtp.secureserver.net" className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
             </div>
             <div>
-              <label className="block font-semibold text-slate-650 mb-1">SMTP Server Port</label>
-              <input type="text" defaultValue="587" className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs" />
+              <label className="block font-bold text-slate-650 mb-1.5">SMTP Server Port</label>
+              <input type="text" defaultValue="587" className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black" />
             </div>
-            <button onClick={() => alert("SMTP Saved")} className="py-2 px-4 bg-blue-600 text-white font-bold rounded-lg">Save SMTP Configuration</button>
+            <button onClick={() => alert("SMTP Saved")} className="py-2.5 px-5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl transition-colors cursor-pointer mt-2">Save SMTP Configuration</button>
           </div>
         )}
 
         {/* SMS Settings */}
         {currentTab === 'sms-settings' && (
-          <div className="space-y-3 text-xs">
+          <div className="space-y-4 text-xs font-semibold">
             <div>
-              <label className="block font-semibold text-slate-650 mb-1">SMS Gateway Client Provider</label>
+              <label className="block font-bold text-slate-650 mb-1.5">SMS Gateway Client Provider</label>
               <select
                 value={smsGatewaySelected}
                 onChange={(e) => setSmsGatewaySelected(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs"
+                className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:border-black text-black"
               >
                 <option value="Twilio">Twilio Blaster</option>
                 <option value="MSG91">MSG91</option>
                 <option value="Plivo">Plivo SMS</option>
               </select>
             </div>
-            <button onClick={() => alert("SMS Client Configured")} className="py-2 px-4 bg-blue-600 text-white font-bold rounded-lg">Save SMS Provider</button>
+            <button onClick={() => alert("SMS Client Configured")} className="py-2.5 px-5 bg-slate-900 hover:bg-black text-white font-bold rounded-xl transition-colors cursor-pointer mt-2">Save SMS Provider</button>
           </div>
         )}
 
         {/* API keys manager */}
         {currentTab === 'api-settings' && (
-          <div className="space-y-4">
+          <div className="space-y-5">
             <form onSubmit={handleAddApiKey} className="space-y-2">
-              <label className="block text-xs font-semibold text-slate-600">Register Custom Integrator Token</label>
+              <label className="block text-[10px] font-bold text-slate-450 uppercase tracking-wider mb-1.5">Register API Client Token</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   placeholder="Key Token Name (e.g. Mobile App Client)"
                   value={newApiKeyName}
                   onChange={(e) => setNewApiKeyName(e.target.value)}
-                  className="flex-1 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none"
+                  className="flex-1 px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black"
                   required
                 />
-                <button type="submit" className="px-3 py-1.5 bg-blue-600 text-white font-bold text-xs rounded-lg">
+                <button type="submit" className="px-4 py-2.5 bg-slate-900 hover:bg-black text-white font-bold text-xs rounded-xl transition-colors cursor-pointer">
                   Generate
                 </button>
               </div>
             </form>
 
-            <div className="space-y-2">
-              <h4 className="text-xs font-bold text-slate-700">Active API Keys</h4>
-              {apiKeys.map((k, idx) => (
-                <div key={idx} className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-between text-xs">
-                  <div>
-                    <strong className="text-slate-800">{k.name}</strong>
-                    <p className="text-[10px] text-slate-400 font-mono mt-0.5">{k.token}</p>
+            <div className="space-y-2.5">
+              <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Active API Keys</h4>
+              <div className="space-y-2">
+                {apiKeys.map((k, idx) => (
+                  <div key={idx} className="p-3.5 bg-slate-55 border border-slate-200 rounded-2xl flex items-center justify-between text-xs font-semibold">
+                    <div>
+                      <strong className="text-slate-850">{k.name}</strong>
+                      <p className="text-[10px] text-slate-450 font-mono mt-0.5">{k.token}</p>
+                    </div>
+                    <button onClick={() => setApiKeys(prev => prev.filter((_, i) => i !== idx))} className="text-rose-600 hover:text-rose-800 font-bold transition-colors cursor-pointer">Revoke</button>
                   </div>
-                  <button onClick={() => setApiKeys(prev => prev.filter((_, i) => i !== idx))} className="text-red-500 hover:text-red-700 text-[10px] font-bold">Revoke</button>
-                </div>
-              ))}
+                ))}
+                {apiKeys.length === 0 && (
+                  <p className="text-xs text-slate-450 text-center py-6">No API developer keys provisioned.</p>
+                )}
+              </div>
             </div>
           </div>
         )}
