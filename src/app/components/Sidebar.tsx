@@ -32,12 +32,22 @@ interface SidebarSection {
   items: { name: string; tab: string }[];
 }
 
-export default function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose?: () => void }) {
+export default function Sidebar({ 
+  isOpen, 
+  onClose,
+  adminModuleTab,
+  setAdminModuleTab
+}: { 
+  isOpen?: boolean; 
+  onClose?: () => void;
+  adminModuleTab: 'services' | 'ecommerce';
+  setAdminModuleTab: (tab: 'services' | 'ecommerce') => void;
+}) {
   const { currentTab, setCurrentTab, setIsLoggedIn, currentUser, setCurrentUser } = useApp();
   const [expandedSection, setExpandedSection] = useState<string | null>('Business Management');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const sections: SidebarSection[] = [
+  const servicesSections: SidebarSection[] = [
     {
       name: 'Business Management',
       icon: Briefcase,
@@ -185,11 +195,86 @@ export default function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose
     }
   ];
 
+  const ecommerceSections: SidebarSection[] = [
+    {
+      name: 'Vendor Management',
+      icon: Users,
+      items: [
+        { name: 'All Vendors', tab: 'all-vendors' },
+        { name: 'Pending Verification', tab: 'pending-vendors' },
+        { name: 'Premium Vendors', tab: 'premium-vendors' },
+      ]
+    },
+    {
+      name: 'Product Management',
+      icon: Tags,
+      items: [
+        { name: 'All Products', tab: 'all-products' },
+        { name: 'Add Product', tab: 'add-product' },
+        { name: 'Product Categories', tab: 'product-categories' },
+        { name: 'Review Moderation', tab: 'product-reviews' },
+      ]
+    },
+    {
+      name: 'Order Management',
+      icon: Inbox,
+      items: [
+        { name: 'All Orders', tab: 'all-orders' },
+        { name: 'Pending Shipments', tab: 'pending-orders' },
+        { name: 'Completed Orders', tab: 'completed-orders' },
+      ]
+    },
+    {
+      name: 'Subscriptions',
+      icon: CreditCard,
+      items: [
+        { name: 'Plans', tab: 'plans' },
+        { name: 'Transactions', tab: 'transactions' },
+      ]
+    },
+    {
+      name: 'SEO',
+      icon: Search,
+      items: [
+        { name: 'Meta Management', tab: 'meta-management' },
+        { name: 'Sitemap', tab: 'sitemap' },
+        { name: 'URL Management', tab: 'url-management' },
+      ]
+    },
+    {
+      name: 'Reports',
+      icon: BarChart3,
+      items: [
+        { name: 'Revenue Reports', tab: 'revenue-reports' },
+        { name: 'User Reports', tab: 'user-reports' },
+      ]
+    },
+    {
+      name: 'CMS',
+      icon: Globe,
+      items: [
+        { name: 'Home Page', tab: 'home-page' },
+        { name: 'Blogs', tab: 'blogs' },
+      ]
+    },
+    {
+      name: 'Settings',
+      icon: Settings,
+      items: [
+        { name: 'General', tab: 'general-settings' },
+        { name: 'Payment Gateway', tab: 'gateway-settings' },
+        { name: 'API Keys', tab: 'api-settings' },
+      ]
+    }
+  ];
+
+  const activeSections = adminModuleTab === 'services' ? servicesSections : ecommerceSections;
+
   const handleToggle = (sectionName: string) => {
     setExpandedSection(expandedSection === sectionName ? null : sectionName);
   };
 
-  const filteredSections = sections.map(sec => {
+  const filteredSections = activeSections.map(sec => {
     const matchedItems = sec.items.filter(item => 
       item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -198,8 +283,41 @@ export default function Sidebar({ isOpen, onClose }: { isOpen?: boolean; onClose
 
   return (
     <aside className={`w-64 bg-white/95 border-r border-slate-200/80 flex flex-col h-[calc(100vh-64px)] fixed left-0 top-16 z-30 overflow-y-auto backdrop-blur-md shadow-sm transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
+      
+      {/* Module Selector Tabs at Top of Sidebar */}
+      <div className="grid grid-cols-2 gap-1 p-2 bg-slate-50 border-b border-slate-200 shrink-0">
+        <button
+          type="button"
+          onClick={() => {
+            setAdminModuleTab('services');
+            setExpandedSection('Business Management');
+          }}
+          className={`py-2 text-[10px] uppercase tracking-wider font-black rounded-lg transition-all text-center cursor-pointer ${
+            adminModuleTab === 'services'
+              ? 'bg-indigo-600 text-white shadow-sm'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/40'
+          }`}
+        >
+          🛠️ Services
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setAdminModuleTab('ecommerce');
+            setExpandedSection('Vendor Management');
+          }}
+          className={`py-2 text-[10px] uppercase tracking-wider font-black rounded-lg transition-all text-center cursor-pointer ${
+            adminModuleTab === 'ecommerce'
+              ? 'bg-orange-655 text-white shadow-sm'
+              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/40'
+          }`}
+        >
+          🛒 E-Commerce
+        </button>
+      </div>
+
       {/* Search Navigation */}
-      <div className="p-4 border-b border-slate-100/85">
+      <div className="p-4 border-b border-slate-100/85 shrink-0">
         <div className="relative">
           <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
             <Search className="w-4 h-4" />

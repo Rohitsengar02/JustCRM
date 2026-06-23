@@ -35,7 +35,9 @@ import {
   Trash2,
   Lock,
   ArrowUpRight,
-  Info
+  Info,
+  ShoppingCart,
+  Minus
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -96,11 +98,13 @@ function AutoScrollCarousel({
     };
   }, [items]);
 
+  if (items.length === 0) return null;
+
   return (
     <div className="space-y-4 text-left">
       <div className="flex justify-between items-center px-1">
         <h3 className="font-extrabold text-slate-900 text-base tracking-tight">{title}</h3>
-        <span className="text-[9px] bg-indigo-50 text-indigo-650 font-bold px-2.5 py-1 rounded-full border border-indigo-100 uppercase tracking-wider">
+        <span className="text-[9px] bg-slate-100 text-slate-655 font-bold px-2.5 py-1 rounded-full border border-slate-200 uppercase tracking-wider">
           Auto Scroll
         </span>
       </div>
@@ -123,9 +127,17 @@ function AutoScrollCarousel({
                 className="relative h-28 bg-slate-100 rounded-xl overflow-hidden mb-3 cursor-pointer"
               >
                 <img src={biz.images[0]} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" alt={biz.name} />
-                <span className="absolute top-2 left-2 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-md font-bold text-[8px] text-slate-700 border border-slate-200 uppercase tracking-wider">
-                  {biz.status}
-                </span>
+                <div className="absolute top-2 left-2 flex gap-1">
+                  <span className={`px-2 py-0.5 rounded-md font-black text-[8px] border uppercase tracking-wider ${biz.businessType === 'service'
+                      ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                      : 'bg-orange-50 border-orange-200 text-orange-755'
+                    }`}>
+                    {biz.businessType === 'service' ? '🛠️ Service' : '🛒 Store'}
+                  </span>
+                  <span className="bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-md font-bold text-[8px] text-slate-700 border border-slate-200 uppercase tracking-wider">
+                    {biz.status}
+                  </span>
+                </div>
               </div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xl shrink-0 p-1 bg-slate-50 border border-slate-100 rounded-lg">{biz.logo}</span>
@@ -135,11 +147,13 @@ function AutoScrollCarousel({
                       setSelectedBiz(biz);
                       setActiveView('detail');
                     }}
-                    className="font-extrabold text-slate-800 text-[11px] truncate leading-tight hover:text-indigo-650 cursor-pointer"
+                    className={`font-extrabold text-slate-800 text-[11px] truncate leading-tight cursor-pointer ${biz.businessType === 'service' ? 'hover:text-indigo-650' : 'hover:text-orange-600'
+                      }`}
                   >
                     {biz.name}
                   </h5>
-                  <span className="text-[8px] text-indigo-600 font-bold block uppercase tracking-wider">{biz.category}</span>
+                  <span className={`text-[8px] font-black block uppercase tracking-wider ${biz.businessType === 'service' ? 'text-indigo-650' : 'text-orange-655'
+                    }`}>{biz.category}</span>
                 </div>
               </div>
               <div className="flex items-center gap-1 text-amber-500 font-bold text-[9px]">
@@ -150,12 +164,17 @@ function AutoScrollCarousel({
             </div>
             <div className="grid grid-cols-2 gap-2 mt-4 pt-2 border-t border-slate-100">
               <button
+                type="button"
                 onClick={() => setInquiryBiz(biz)}
-                className="py-1.5 bg-slate-900 hover:bg-black text-white text-[9px] font-bold rounded-lg transition-all cursor-pointer"
+                className={`py-1.5 text-white text-[9px] font-black rounded-lg transition-all cursor-pointer shadow-3xs hover:shadow-2xs ${biz.businessType === 'service'
+                    ? 'bg-indigo-650 hover:bg-indigo-700 shadow-indigo-650/10'
+                    : 'bg-orange-600 hover:bg-orange-700 shadow-orange-600/10'
+                  }`}
               >
                 Inquire
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setSelectedBiz(biz);
                   setActiveView('detail');
@@ -167,6 +186,263 @@ function AutoScrollCarousel({
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+
+
+interface MockProduct {
+  id: string;
+  name: string;
+  price: number;
+  originalPrice: number;
+  rating: number;
+  image: string;
+  vendorName: string;
+  category: string;
+}
+
+const mockProductsList: MockProduct[] = [
+  // Electronics
+  { id: 'p-1', name: 'UltraHD Smart CCTV Camera', price: 2499, originalPrice: 3999, rating: 4.8, image: 'https://images.unsplash.com/photo-1557324218-8f38b36e7a31?w=400&q=80', vendorName: 'Smart Solution Electronics', category: 'electronics' },
+  { id: 'p-2', name: 'Home Automation Smart Hub', price: 4999, originalPrice: 7999, rating: 4.7, image: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=400&q=80', vendorName: 'Smart Solution Electronics', category: 'electronics' },
+  { id: 'p-3', name: 'Noise Cancelling Wireless Earbuds', price: 1899, originalPrice: 2999, rating: 4.5, image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&q=80', vendorName: 'Smart Solution Electronics', category: 'electronics' },
+  { id: 'p-4', name: 'Voice-Controlled Smart Speaker', price: 3499, originalPrice: 4999, rating: 4.6, image: 'https://images.unsplash.com/photo-1543512214-318c7553f230?w=400&q=80', vendorName: 'Smart Solution Electronics', category: 'electronics' },
+
+  // Fashion
+  { id: 'p-5', name: 'Premium Cotton Summer Tee', price: 699, originalPrice: 1299, rating: 4.4, image: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400&q=80', vendorName: 'Khandelwal Apparel Hub', category: 'fashion' },
+  { id: 'p-6', name: 'Classic Slim Fit Denim Jacket', price: 1899, originalPrice: 2999, rating: 4.7, image: 'https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=400&q=80', vendorName: 'Khandelwal Apparel Hub', category: 'fashion' },
+  { id: 'p-7', name: 'Comfortable Urban Chino Pants', price: 1199, originalPrice: 1999, rating: 4.3, image: 'https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&q=80', vendorName: 'Khandelwal Apparel Hub', category: 'fashion' },
+  { id: 'p-8', name: 'Vintage Leather Casual Shoes', price: 2499, originalPrice: 3999, rating: 4.6, image: 'https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=400&q=80', vendorName: 'Khandelwal Apparel Hub', category: 'fashion' },
+
+  // Home Decor
+  { id: 'p-9', name: 'Modern Scandinavian Lounge Chair', price: 8999, originalPrice: 14999, rating: 4.9, image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=400&q=80', vendorName: 'Malviya Decor & Furniture', category: 'decor' },
+  { id: 'p-10', name: 'Geometric Ceramic Plant Pot Set', price: 849, originalPrice: 1499, rating: 4.5, image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&q=80', vendorName: 'Malviya Decor & Furniture', category: 'decor' },
+  { id: 'p-11', name: 'Minimalist Brass Table Lamp', price: 1499, originalPrice: 2499, rating: 4.6, image: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&q=80', vendorName: 'Malviya Decor & Furniture', category: 'decor' },
+  { id: 'p-12', name: 'Woven Cotton Boho Throw Blanket', price: 999, originalPrice: 1699, rating: 4.8, image: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=400&q=80', vendorName: 'Malviya Decor & Furniture', category: 'decor' },
+
+  // Sports & Fitness
+  { id: 'p-13', name: 'Premium Anti-Slip Yoga Mat', price: 799, originalPrice: 1499, rating: 4.7, image: 'https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=400&q=80', vendorName: 'Greenfield Sports Center', category: 'fitness' },
+  { id: 'p-14', name: 'Adjustable Dumbbell Set (20kg)', price: 3499, originalPrice: 5999, rating: 4.8, image: 'https://images.unsplash.com/photo-1638536532686-d610adfc8e5c?w=400&q=80', vendorName: 'Greenfield Sports Center', category: 'fitness' },
+  { id: 'p-15', name: 'High-Speed Smart Jump Rope', price: 599, originalPrice: 999, rating: 4.4, image: 'https://images.unsplash.com/photo-1544033527-b192daee1f5b?w=400&q=80', vendorName: 'Greenfield Sports Center', category: 'fitness' },
+  { id: 'p-16', name: 'Ergonomic Sports Water Bottle', price: 349, originalPrice: 599, rating: 4.5, image: 'https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=400&q=80', vendorName: 'Greenfield Sports Center', category: 'fitness' }
+];
+
+function ProductCarousel({
+  title,
+  products,
+  layoutType,
+  setSelectedProduct,
+  setActiveView
+}: {
+  title: string;
+  products: MockProduct[];
+  layoutType: 'minimalist' | 'glassmorphic' | 'tech' | 'landscape';
+  setSelectedProduct: (p: MockProduct) => void;
+  setActiveView: (v: any) => void;
+}) {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    let animationFrameId: number;
+    const scrollSpeed = 0.55;
+
+    const scroll = () => {
+      el.scrollLeft += scrollSpeed;
+      if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 1) {
+        el.scrollLeft = 0;
+      }
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    animationFrameId = requestAnimationFrame(scroll);
+
+    const pause = () => cancelAnimationFrame(animationFrameId);
+    const resume = () => {
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    el.addEventListener('mouseenter', pause);
+    el.addEventListener('mouseleave', resume);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      el.removeEventListener('mouseenter', pause);
+      el.removeEventListener('mouseleave', resume);
+    };
+  }, [products]);
+
+  const renderCard = (p: MockProduct, idx: number) => {
+    const discount = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+
+    const handleProductClick = () => {
+      setSelectedProduct(p);
+      setActiveView('product-detail');
+    };
+
+    if (layoutType === 'minimalist') {
+      // Clean, light, outline-grid card with orange details
+      return (
+        <div key={`${p.id}-${idx}`} className="w-56 bg-white border border-slate-200 rounded-2xl p-3.5 shrink-0 transition-all hover:shadow-md text-left flex flex-col justify-between h-[310px] group relative overflow-hidden">
+          <span className="absolute top-2.5 left-2.5 bg-orange-600 text-white font-black text-[9px] px-2 py-0.5 rounded-md uppercase tracking-wider z-10 shadow-3xs">
+            -{discount}%
+          </span>
+          <div onClick={handleProductClick} className="cursor-pointer">
+            <div className="relative h-36 bg-slate-50 rounded-xl overflow-hidden mb-3 border border-slate-100">
+              <img src={p.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt={p.name} />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[8px] text-slate-400 font-bold uppercase tracking-wider block">{p.vendorName}</span>
+              <h5 className="font-extrabold text-slate-800 text-[10px] truncate leading-tight group-hover:text-orange-600 transition-colors">{p.name}</h5>
+              <div className="flex items-center gap-1 text-amber-500 font-bold text-[9px] pt-0.5">
+                <span>★ {p.rating}</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center justify-between pt-2 border-t border-slate-100 mt-2">
+            <div className="flex flex-col">
+              <span className="text-xs font-black text-slate-900">₹{p.price.toLocaleString()}</span>
+              <span className="text-[8px] text-slate-400 line-through">₹{p.originalPrice.toLocaleString()}</span>
+            </div>
+            <button 
+              type="button"
+              onClick={handleProductClick}
+              className="px-3.5 py-1.5 bg-orange-600 hover:bg-orange-700 text-white text-[9px] font-black rounded-lg uppercase tracking-wider shadow-xs shadow-orange-500/10 cursor-pointer text-center"
+            >
+              Buy
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    if (layoutType === 'glassmorphic') {
+      // Full image background with white theme compatible frosted glass overlay details
+      return (
+        <div key={`${p.id}-${idx}`} onClick={handleProductClick} className="w-56 h-[310px] rounded-2xl shrink-0 overflow-hidden relative shadow-2xs hover:shadow-xs group border border-slate-200/50 flex flex-col justify-end text-left p-3.5 bg-white cursor-pointer">
+          <img src={p.image} className="absolute inset-0 w-full h-full object-cover group-hover:scale-103 transition-transform duration-500" alt={p.name} />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent" />
+          <span className="absolute top-3.5 right-3.5 bg-amber-500 text-white font-black text-[8px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-3xs z-10">
+            Featured
+          </span>
+          <div className="backdrop-blur-md bg-white/90 border border-slate-200/60 p-3 rounded-xl text-slate-800 space-y-2.5 z-10 shadow-sm">
+            <div className="space-y-0.5">
+              <span className="text-[7px] text-slate-500 font-bold uppercase tracking-wider block">{p.vendorName}</span>
+              <h5 className="font-extrabold text-[10px] truncate text-slate-900 leading-tight">{p.name}</h5>
+            </div>
+            <div className="flex items-center justify-between border-t border-slate-100 pt-2">
+              <div className="flex flex-col">
+                <span className="text-xs font-black text-emerald-600">₹{p.price.toLocaleString()}</span>
+                <span className="text-[8px] text-slate-400 line-through">₹{p.originalPrice.toLocaleString()}</span>
+              </div>
+              <button 
+                type="button"
+                onClick={(e) => { e.stopPropagation(); handleProductClick(); }}
+                className="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white flex items-center justify-center text-sm shadow-xs cursor-pointer active:scale-90 transition-all"
+              >
+                🛒
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (layoutType === 'tech') {
+      // Dark slate background tech card with indigo neon accents
+      return (
+        <div key={`${p.id}-${idx}`} className="w-56 bg-slate-900 border border-indigo-950 rounded-2xl p-3.5 shrink-0 shadow-2xs hover:border-indigo-500/40 transition-all text-left flex flex-col justify-between h-[310px] group relative overflow-hidden">
+          <span className="absolute top-2.5 right-2.5 bg-indigo-650 text-white font-extrabold text-[8px] px-2 py-0.5 rounded-md uppercase tracking-wider z-10">
+            PRO TECH
+          </span>
+          <div onClick={handleProductClick} className="cursor-pointer">
+            <div className="relative h-32 bg-slate-950 rounded-xl overflow-hidden mb-3 border border-slate-800">
+              <img src={p.image} className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500 opacity-90" alt={p.name} />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[8px] text-indigo-400 font-extrabold uppercase tracking-wider block">{p.vendorName}</span>
+              <h5 className="font-extrabold text-white text-[10px] truncate leading-tight group-hover:text-indigo-400 transition-colors">{p.name}</h5>
+              <div className="flex items-center gap-1 text-indigo-300 font-bold text-[9px]">
+                <span>★ {p.rating} Verified</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center justify-between pt-2 border-t border-slate-800 mt-2">
+            <div className="flex flex-col">
+              <span className="text-xs font-black text-indigo-400">₹{p.price.toLocaleString()}</span>
+              <span className="text-[8px] text-slate-500 line-through">₹{p.originalPrice.toLocaleString()}</span>
+            </div>
+            <button 
+              type="button"
+              onClick={handleProductClick}
+              className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-[9px] font-black rounded-lg uppercase tracking-wider shadow-sm shadow-indigo-600/20 cursor-pointer text-center"
+            >
+              Checkout
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // Landscape Card (Horizontal layout)
+    return (
+      <div key={`${p.id}-${idx}`} onClick={handleProductClick} className="w-80 bg-white border border-slate-200/80 rounded-2xl p-4 shrink-0 shadow-2xs hover:shadow-xs transition-all text-left flex gap-4 h-[145px] items-center group cursor-pointer">
+        <div className="w-24 h-24 bg-slate-50 rounded-xl overflow-hidden shrink-0 border border-slate-100">
+          <img src={p.image} className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500" alt={p.name} />
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col justify-between h-full py-0.5">
+          <div className="space-y-1">
+            <div className="flex justify-between items-center">
+              <span className="text-[8px] text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">{p.vendorName}</span>
+              <span className="text-[9px] text-amber-500 font-bold">★ {p.rating}</span>
+            </div>
+            <h5 className="font-extrabold text-slate-800 text-[10px] leading-tight line-clamp-2">{p.name}</h5>
+            <div className="flex items-baseline gap-1.5 pt-0.5">
+              <span className="text-xs font-black text-slate-900">₹{p.price.toLocaleString()}</span>
+              <span className="text-[8px] text-slate-400 line-through">₹{p.originalPrice.toLocaleString()}</span>
+            </div>
+          </div>
+          <button 
+            type="button"
+            onClick={(e) => { e.stopPropagation(); handleProductClick(); }}
+            className="w-full py-2 bg-slate-900 hover:bg-black text-white text-[8px] font-black rounded-lg uppercase tracking-wider cursor-pointer text-center transition-all"
+          >
+            Instant Purchase
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-4 text-left">
+      <div className="flex justify-between items-center px-1">
+        <div className="space-y-0.5">
+          <h3 className="font-black text-slate-900 text-base tracking-tight">{title}</h3>
+          <p className="text-[8px] text-slate-400 font-bold uppercase tracking-wider">Direct Purchase from Local Stores</p>
+        </div>
+        <span className={`text-[8px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border ${layoutType === 'tech'
+            ? 'bg-slate-900 border-indigo-950 text-indigo-400'
+            : layoutType === 'glassmorphic'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+              : layoutType === 'minimalist'
+                ? 'bg-orange-50 border-orange-200 text-orange-700'
+                : 'bg-slate-100 border-slate-200 text-slate-655'
+          }`}>
+          {layoutType.toUpperCase()} STYLE
+        </span>
+      </div>
+      <div
+        ref={containerRef}
+        className="flex gap-5 overflow-x-auto no-scrollbar scroll-smooth py-2"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        {[...products, ...products, ...products].map((p, idx) => renderCard(p, idx))}
       </div>
     </div>
   );
@@ -206,9 +482,64 @@ export default function UserWebsite() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
-  const [activeView, setActiveView] = useState<'home' | 'all-businesses' | 'detail' | 'inquiry-chat' | 'signin' | 'register' | 'my-profile'>('home');
+  const [selectedProduct, setSelectedProduct] = useState<MockProduct | null>(null);
+  const [activeView, setActiveView] = useState<'home' | 'all-businesses' | 'detail' | 'product-detail' | 'inquiry-chat' | 'signin' | 'register' | 'my-profile' | 'checkout'>('home');
   const [chatMessages, setChatMessages] = useState<{ sender: 'user' | 'business'; text: string; time: string }[]>([]);
   const [chatInput, setChatInput] = useState('');
+
+  // Cart & Checkout Wizard State
+  const [cart, setCart] = useState<{ product: MockProduct; quantity: number }[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [checkoutStep, setCheckoutStep] = useState<1 | 2 | 3>(1);
+
+  const [checkoutName, setCheckoutName] = useState('');
+  const [checkoutPhone, setCheckoutPhone] = useState('');
+  const [checkoutEmail, setCheckoutEmail] = useState('');
+  const [checkoutCity, setCheckoutCity] = useState('Mumbai');
+  const [checkoutArea, setCheckoutArea] = useState('');
+  const [checkoutAddress, setCheckoutAddress] = useState('');
+  const [checkoutLatitude, setCheckoutLatitude] = useState<number>(19.1197);
+  const [checkoutLongitude, setCheckoutLongitude] = useState<number>(72.8464);
+  const [checkoutPaymentMethod, setCheckoutPaymentMethod] = useState('UPI');
+  const [checkoutSuccess, setCheckoutSuccess] = useState(false);
+  const [isCheckoutDetectingLocation, setIsCheckoutDetectingLocation] = useState(false);
+
+  const addToCart = (product: MockProduct, openSidebar = true) => {
+    setCart(prev => {
+      const existing = prev.find(item => item.product.id === product.id);
+      if (existing) {
+        return prev.map(item =>
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      }
+      return [...prev, { product, quantity: 1 }];
+    });
+    if (openSidebar) {
+      setIsCartOpen(true);
+    }
+  };
+
+  const removeFromCart = (productId: string) => {
+    setCart(prev => prev.filter(item => item.product.id !== productId));
+  };
+
+  const updateCartQty = (productId: string, qty: number) => {
+    if (qty <= 0) {
+      removeFromCart(productId);
+      return;
+    }
+    setCart(prev =>
+      prev.map(item =>
+        item.product.id === productId ? { ...item, quantity: qty } : item
+      )
+    );
+  };
+
+  const clearCart = () => {
+    setCart([]);
+  };
 
   const [currentUser, setCurrentUser] = useState<any>(null);
 
@@ -226,6 +557,7 @@ export default function UserWebsite() {
   const [kycSubmitted, setKycSubmitted] = useState(false);
 
   // Wizard state hooks
+  const [registerType, setRegisterType] = useState<'service' | 'vendor' | null>(null);
   const [registerStep, setRegisterStep] = useState(1);
   const [regName, setRegName] = useState('');
   const [regOwner, setRegOwner] = useState('');
@@ -239,10 +571,30 @@ export default function UserWebsite() {
   const [regAddress, setRegAddress] = useState('');
   const [regHours, setRegHours] = useState('09:00 AM - 06:00 PM (Mon-Sat)');
   const [regServicesText, setRegServicesText] = useState('');
+  const [regProductName, setRegProductName] = useState('');
+  const [regProductPrice, setRegProductPrice] = useState('');
+  const [regProductStock, setRegProductStock] = useState('10');
+  const [regProductCategory, setRegProductCategory] = useState('Electronics');
+  const [regProductEmoji, setRegProductEmoji] = useState('📦');
+
+  // OTP Verification States
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [enteredOtp, setEnteredOtp] = useState('');
+  const [isOtpVerified, setIsOtpVerified] = useState(false);
+  const [isSendingOtp, setIsSendingOtp] = useState(false);
+  const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
+
+  // Geolocation & Maps States
+  const [regLatitude, setRegLatitude] = useState<number>(19.1197); // default Mumbai
+  const [regLongitude, setRegLongitude] = useState<number>(72.8464);
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
 
   // Sign In inputs
   const [signInEmail, setSignInEmail] = useState('');
   const [signInPhone, setSignInPhone] = useState('');
+
+  const [activeCategoryTab, setActiveCategoryTab] = useState<'services' | 'products'>('services');
 
   React.useEffect(() => {
     const saved = localStorage.getItem('registeredBusiness');
@@ -281,6 +633,27 @@ export default function UserWebsite() {
       b.about.toLowerCase().includes(searchVal.toLowerCase());
 
     return matchesCategory && matchesLocality && matchesRating && matchesStatus && matchesSearch;
+  });
+
+  const filteredProducts = mockProductsList.filter((p) => {
+    let mappedCat = 'All';
+    if (filterCategory === 'Electronic Goods Dealers') mappedCat = 'electronics';
+    else if (filterCategory === 'Apparel & Clothing' || filterCategory === 'Fashion & Tailors') mappedCat = 'fashion';
+    else if (filterCategory === 'Home decor & Furniture') mappedCat = 'decor';
+    else if (filterCategory === 'Beauty & Cosmetics' || filterCategory === 'Beauty Parlours') mappedCat = 'fashion';
+    else if (filterCategory === 'Sports & Fitness Goods' || filterCategory === 'Gyms & Fitness') mappedCat = 'fitness';
+
+    const matchesCategory = filterCategory === 'All' || mappedCat === 'All' || p.category === mappedCat;
+    
+    // Locality check via vendor's city
+    const vendor = businesses.find(b => b.name === p.vendorName);
+    const matchesLocality = filterLocality === 'All' || (vendor && vendor.location.city === filterLocality);
+    
+    const matchesSearch =
+      p.name.toLowerCase().includes(searchVal.toLowerCase()) ||
+      p.vendorName.toLowerCase().includes(searchVal.toLowerCase());
+      
+    return matchesCategory && matchesLocality && matchesSearch;
   });
 
   const carouselSlides = [
@@ -422,6 +795,20 @@ export default function UserWebsite() {
   const shortlistedBusinesses = businesses.filter(b => shortlistedIds.includes(b.id));
 
   const renderAllBusinesses = () => {
+    const isProductCategory = (catName: string) => {
+      return [
+        'Electronic Goods Dealers',
+        'Apparel & Clothing',
+        'Home decor & Furniture',
+        'Beauty & Cosmetics',
+        'Sports & Fitness Goods'
+      ].includes(catName);
+    };
+
+    const showProducts = filterCategory === 'All'
+      ? activeCategoryTab === 'products'
+      : isProductCategory(filterCategory);
+
     return (
       <div className="space-y-6 text-left">
         {/* Beautiful Top Banner */}
@@ -486,10 +873,14 @@ export default function UserWebsite() {
                 <option value="Dentists">Dentists</option>
                 <option value="Hotels">Hotels</option>
                 <option value="Restaurants">Restaurants</option>
-                <option value="Electronic Goods Dealers">Electronic Goods Dealers</option>
                 <option value="Courier Services">Courier Services</option>
                 <option value="Beauty Parlours">Beauty Parlours</option>
                 <option value="Gyms & Fitness">Gyms & Fitness</option>
+                <option value="Electronic Goods Dealers">Electronic Goods Dealers</option>
+                <option value="Apparel & Clothing">Apparel & Clothing</option>
+                <option value="Home decor & Furniture">Home decor & Furniture</option>
+                <option value="Beauty & Cosmetics">Beauty & Cosmetics</option>
+                <option value="Sports & Fitness Goods">Sports & Fitness Goods</option>
               </select>
             </div>
 
@@ -548,120 +939,236 @@ export default function UserWebsite() {
             </div>
           </aside>
 
-          {/* Main Grid showing all business cards */}
+          {/* Main Grid showing all business or product cards */}
           <div className="flex-1 space-y-5">
-            <div className="flex justify-between items-center px-1">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 px-1 pb-2 border-b border-slate-100">
               <span className="text-[10px] text-slate-450 font-bold uppercase tracking-wider">
-                Showing {allFilteredBusinesses.length} verified results
+                Showing {showProducts ? filteredProducts.length : allFilteredBusinesses.length} verified results
               </span>
+
+              {filterCategory === 'All' && (
+                <div className="flex gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200/40 shadow-3xs self-start sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => setActiveCategoryTab('services')}
+                    className={`px-4 py-1.5 text-[9px] uppercase tracking-wider font-black rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${activeCategoryTab === 'services'
+                        ? 'bg-indigo-600 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/30'
+                      }`}
+                  >
+                    🛠️ Services
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveCategoryTab('products')}
+                    className={`px-4 py-1.5 text-[9px] uppercase tracking-wider font-black rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${activeCategoryTab === 'products'
+                        ? 'bg-orange-600 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/30'
+                      }`}
+                  >
+                    🛒 Products
+                  </button>
+                </div>
+              )}
             </div>
 
-            {allFilteredBusinesses.length === 0 ? (
-              <div className="bg-white border border-slate-200 rounded-[20px] p-12 text-center space-y-4">
-                <span className="text-5xl block select-none">🔍</span>
-                <h4 className="font-extrabold text-slate-800 text-base">No matching listings found</h4>
-                <p className="text-[11px] text-slate-500 max-w-sm mx-auto leading-relaxed">
-                  We couldn't find any business matching your current filter criteria. Try resetting or selecting a different city.
-                </p>
-                <button
-                  onClick={() => {
-                    setFilterCategory('All');
-                    setFilterLocality('All');
-                    setFilterRating(0);
-                    setFilterStatus('All');
-                  }}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition-all cursor-pointer"
-                >
-                  Reset Filter Parameters
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {allFilteredBusinesses.map((biz) => {
-                  const isShortlisted = shortlistedIds.includes(biz.id);
-                  return (
-                    <div
-                      key={biz.id}
-                      className="bg-white border border-slate-200/85 rounded-2xl overflow-hidden shadow-2xs hover:shadow-xs hover:border-slate-350 transition-all flex flex-col justify-between"
-                    >
-                      <div>
-                        {/* Card Cover Image */}
-                        <div className="relative h-40 bg-slate-100 overflow-hidden">
-                          <img
-                            src={biz.images[0] || 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600'}
-                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                            alt={biz.name}
-                          />
-                          <div className="absolute top-3 left-3 flex gap-1.5">
-                            <span className="bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-md font-bold text-[8px] text-indigo-700 border border-slate-200 uppercase tracking-wider">
-                              {biz.status}
+            {showProducts ? (
+              filteredProducts.length === 0 ? (
+                <div className="bg-white border border-slate-200 rounded-[20px] p-12 text-center space-y-4">
+                  <span className="text-5xl block select-none">🔍</span>
+                  <h4 className="font-extrabold text-slate-800 text-base">No matching products found</h4>
+                  <p className="text-[11px] text-slate-500 max-w-sm mx-auto leading-relaxed">
+                    We couldn't find any product matching your current filter criteria. Try resetting.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setFilterCategory('All');
+                      setFilterLocality('All');
+                      setFilterRating(0);
+                      setFilterStatus('All');
+                    }}
+                    className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-lg transition-all cursor-pointer"
+                  >
+                    Reset Filter Parameters
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {filteredProducts.map((p) => {
+                    const discount = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+                    const handleProductClick = () => {
+                      setSelectedProduct(p);
+                      setActiveView('product-detail');
+                    };
+                    return (
+                      <div
+                        key={p.id}
+                        className="bg-white border border-slate-200/85 rounded-2xl overflow-hidden shadow-2xs hover:shadow-xs hover:border-slate-350 transition-all flex flex-col justify-between group cursor-pointer"
+                        onClick={handleProductClick}
+                      >
+                        <div>
+                          {/* Card Cover Image */}
+                          <div className="relative h-40 bg-slate-50 overflow-hidden border-b border-slate-100">
+                            <img
+                              src={p.image}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                              alt={p.name}
+                            />
+                            <span className="absolute top-3 left-3 bg-orange-600 text-white font-black text-[9px] px-2 py-0.5 rounded-md uppercase tracking-wider shadow-3xs z-10">
+                              -{discount}%
                             </span>
-                            {biz.subscription === 'Platinum' && (
-                              <span className="bg-amber-500 text-white px-2 py-0.5 rounded-md font-extrabold text-[8px] uppercase tracking-wider shadow-xs">
-                                Pro
-                              </span>
-                            )}
+                            <span className="absolute top-3 right-3 bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-md font-bold text-[8px] text-slate-700 border border-slate-200 uppercase tracking-wider z-10">
+                              Verified Stock
+                            </span>
+                          </div>
+
+                          {/* Card Info */}
+                          <div className="p-4 space-y-3">
+                            <div className="space-y-1">
+                              <span className="text-[8px] text-slate-400 font-bold uppercase tracking-wider block">{p.vendorName}</span>
+                              <h4 className="font-extrabold text-slate-800 text-xs truncate leading-tight group-hover:text-orange-600 transition-colors">
+                                {p.name}
+                              </h4>
+                              <p className="text-[9px] text-orange-600 font-bold uppercase tracking-wider mt-0.5">{p.category.toUpperCase()}</p>
+                            </div>
+
+                            <div className="flex items-center gap-0.5 text-amber-500 text-[10px] font-bold">
+                              <span>★ {p.rating}</span>
+                              <span className="text-slate-400 font-medium ml-1">(Verified review)</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex items-center justify-between p-4 border-t border-slate-100 bg-slate-50/50">
+                          <div className="flex flex-col">
+                            <span className="text-xs font-black text-slate-900">₹{p.price.toLocaleString()}</span>
+                            <span className="text-[8px] text-slate-400 line-through">₹{p.originalPrice.toLocaleString()}</span>
                           </div>
                           <button
-                            onClick={() => toggleShortlist(biz.id)}
-                            className="absolute top-3 right-3 p-1.5 rounded-full bg-white/95 text-slate-400 hover:text-rose-500 border border-slate-200 transition-all cursor-pointer shadow-3xs"
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleProductClick();
+                            }}
+                            className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-[9px] font-black rounded-lg uppercase tracking-wider shadow-xs shadow-orange-500/10 cursor-pointer text-center"
                           >
-                            <Heart className={`w-3.5 h-3.5 ${isShortlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                            View Details
                           </button>
                         </div>
-
-                        {/* Card Info */}
-                        <div className="p-4 space-y-3">
-                          <div className="flex items-center gap-2.5">
-                            <span className="text-2xl p-1 bg-slate-50 border border-slate-150 rounded-xl shrink-0">{biz.logo}</span>
-                            <div className="min-w-0">
-                              <h4 className="font-extrabold text-slate-800 text-xs truncate leading-tight hover:text-indigo-650 cursor-pointer" onClick={() => {
-                                setSelectedBiz(biz);
-                                setActiveView('detail');
-                              }}>
-                                {biz.name}
-                              </h4>
-                              <p className="text-[9px] text-indigo-600 font-bold uppercase tracking-wider mt-0.5">{biz.category}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )
+            ) : (
+              allFilteredBusinesses.length === 0 ? (
+                <div className="bg-white border border-slate-200 rounded-[20px] p-12 text-center space-y-4">
+                  <span className="text-5xl block select-none">🔍</span>
+                  <h4 className="font-extrabold text-slate-800 text-base">No matching listings found</h4>
+                  <p className="text-[11px] text-slate-500 max-w-sm mx-auto leading-relaxed">
+                    We couldn't find any business matching your current filter criteria. Try resetting or selecting a different city.
+                  </p>
+                  <button
+                    onClick={() => {
+                      setFilterCategory('All');
+                      setFilterLocality('All');
+                      setFilterRating(0);
+                      setFilterStatus('All');
+                    }}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition-all cursor-pointer"
+                  >
+                    Reset Filter Parameters
+                  </button>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {allFilteredBusinesses.map((biz) => {
+                    const isShortlisted = shortlistedIds.includes(biz.id);
+                    return (
+                      <div
+                        key={biz.id}
+                        className="bg-white border border-slate-200/85 rounded-2xl overflow-hidden shadow-2xs hover:shadow-xs hover:border-slate-350 transition-all flex flex-col justify-between"
+                      >
+                        <div>
+                          {/* Card Cover Image */}
+                          <div className="relative h-40 bg-slate-100 overflow-hidden">
+                            <img
+                              src={biz.images[0] || 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=600'}
+                              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                              alt={biz.name}
+                            />
+                            <div className="absolute top-3 left-3 flex gap-1.5">
+                              <span className="bg-white/95 backdrop-blur-xs px-2.5 py-0.5 rounded-md font-bold text-[8px] text-indigo-700 border border-slate-200 uppercase tracking-wider">
+                                {biz.status}
+                              </span>
+                              {biz.subscription === 'Platinum' && (
+                                <span className="bg-amber-500 text-white px-2 py-0.5 rounded-md font-extrabold text-[8px] uppercase tracking-wider shadow-xs">
+                                  Pro
+                                </span>
+                              )}
                             </div>
+                            <button
+                              onClick={() => toggleShortlist(biz.id)}
+                              className="absolute top-3 right-3 p-1.5 rounded-full bg-white/95 text-slate-400 hover:text-rose-500 border border-slate-200 transition-all cursor-pointer shadow-3xs"
+                            >
+                              <Heart className={`w-3.5 h-3.5 ${isShortlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                            </button>
                           </div>
 
-                          <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed font-semibold">
-                            {biz.about}
-                          </p>
-
-                          <div className="flex items-center justify-between text-[9px] font-bold text-slate-500 pt-1">
-                            <div className="flex items-center gap-0.5 text-amber-500">
-                              <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                              <span>{biz.rating.toFixed(1)}</span>
-                              <span className="text-slate-400 font-medium">(Verified)</span>
+                          {/* Card Info */}
+                          <div className="p-4 space-y-3">
+                            <div className="flex items-center gap-2.5">
+                              <span className="text-2xl p-1 bg-slate-50 border border-slate-150 rounded-xl shrink-0">{biz.logo}</span>
+                              <div className="min-w-0">
+                                <h4 className="font-extrabold text-slate-800 text-xs truncate leading-tight hover:text-indigo-650 cursor-pointer" onClick={() => {
+                                  setSelectedBiz(biz);
+                                  setActiveView('detail');
+                                }}>
+                                  {biz.name}
+                                </h4>
+                                <p className="text-[9px] text-indigo-600 font-bold uppercase tracking-wider mt-0.5">{biz.category}</p>
+                              </div>
                             </div>
-                            <span className="text-slate-700 font-semibold">{biz.location.city}, {biz.location.area}</span>
+
+                            <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed font-semibold">
+                              {biz.about}
+                            </p>
+
+                            <div className="flex items-center justify-between text-[9px] font-bold text-slate-500 pt-1">
+                              <div className="flex items-center gap-0.5 text-amber-500">
+                                <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                                <span>{biz.rating.toFixed(1)}</span>
+                                <span className="text-slate-400 font-medium">(Verified)</span>
+                              </div>
+                              <span className="text-slate-700 font-semibold">{biz.location.city}, {biz.location.area}</span>
+                            </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Action buttons */}
-                      <div className="grid grid-cols-2 gap-2 p-4 border-t border-slate-100 bg-slate-50/50">
-                        <button
-                          onClick={() => handleInquireClick(biz)}
-                          className="py-2 bg-slate-900 hover:bg-black text-white text-[9px] font-bold rounded-lg transition-all cursor-pointer shadow-3xs"
-                        >
-                          Send Inquiry
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedBiz(biz);
-                            setActiveView('detail');
-                          }}
-                          className="py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-770 text-[9px] font-bold rounded-lg transition-all cursor-pointer shadow-3xs"
-                        >
-                          View Details
-                        </button>
+                        {/* Action buttons */}
+                        <div className="grid grid-cols-2 gap-2 p-4 border-t border-slate-100 bg-slate-50/50">
+                          <button
+                            onClick={() => handleInquireClick(biz)}
+                            className="py-2 bg-slate-900 hover:bg-black text-white text-[9px] font-bold rounded-lg transition-all cursor-pointer shadow-3xs"
+                          >
+                            Send Inquiry
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedBiz(biz);
+                              setActiveView('detail');
+                            }}
+                            className="py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-770 text-[9px] font-bold rounded-lg transition-all cursor-pointer shadow-3xs"
+                          >
+                            View Details
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                    );
+                  })}
+                </div>
+              )
             )}
           </div>
         </div>
@@ -945,6 +1452,744 @@ export default function UserWebsite() {
     );
   };
 
+  const renderProductDetail = () => {
+    if (!selectedProduct) {
+      return (
+        <div className="text-center py-12">
+          <p className="text-xs text-slate-500 font-bold">No product selected.</p>
+          <button onClick={() => setActiveView('all-businesses')} className="mt-4 px-4 py-2 bg-orange-600 text-white rounded-lg text-xs font-bold uppercase tracking-wider">
+            Back to Shop
+          </button>
+        </div>
+      );
+    }
+
+    const discount = Math.round(((selectedProduct.originalPrice - selectedProduct.price) / selectedProduct.originalPrice) * 100);
+    
+    // Find matching business for vendor profile
+    const matchedVendor = businesses.find(b => b.name === selectedProduct.vendorName);
+
+    // Recommended products (same category, excluding current product)
+    const recommended = mockProductsList.filter(p => p.category === selectedProduct.category && p.id !== selectedProduct.id);
+
+    // Dynamic mock specifications based on category
+    const getSpecs = (category: string) => {
+      switch (category) {
+        case 'electronics':
+          return [
+            { label: 'Power Source', val: 'Direct Cable / Rechargeable Battery' },
+            { label: 'Connectivity', val: 'Wi-Fi 2.4GHz / Bluetooth 5.0' },
+            { label: 'Warranty', val: '1 Year Manufacturer Warranty' },
+            { label: 'Material', val: 'Premium ABS Plastic & Metal' }
+          ];
+        case 'fashion':
+          return [
+            { label: 'Material', val: '100% Organic Breathable Cotton' },
+            { label: 'Fit Type', val: 'Regular Fit / Comfort Stretch' },
+            { label: 'Wash Care', val: 'Machine Wash Cold, Tumble Dry Low' },
+            { label: 'Country of Origin', val: 'India' }
+          ];
+        case 'decor':
+          return [
+            { label: 'Dimensions', val: 'Standard Medium Ergonomic' },
+            { label: 'Material', val: 'Imported Oak Wood & Ceramic Glass' },
+            { label: 'Style', val: 'Minimalist Scandinavian Craftsmanship' },
+            { label: 'Assembly', val: 'Pre-assembled / Ready to Place' }
+          ];
+        case 'fitness':
+          return [
+            { label: 'Build Material', val: 'Heavy Duty Textured PVC / Iron Core' },
+            { label: 'Dimensions', val: 'Standard Adjustable / Fit Grip' },
+            { label: 'Skill Level', val: 'Beginner to Professional Athlete' },
+            { label: 'Weight Limit', val: 'Supports up to 150 kg' }
+          ];
+        default:
+          return [
+            { label: 'Availability', val: 'In Stock (Direct Store Pick)' },
+            { label: 'Quality Audit', val: 'Verified & Quality Tested' },
+            { label: 'Warranty', val: 'Standard 6 Month Store Cover' }
+          ];
+      }
+    };
+
+    const handleVendorInquiryClick = () => {
+      if (matchedVendor) {
+        handleInquireClick(matchedVendor);
+      } else {
+        // Fallback mock vendor contact
+        alert(`Inquiry sent to ${selectedProduct.vendorName} for "${selectedProduct.name}"! They will contact you shortly.`);
+      }
+    };
+
+    return (
+      <div className="space-y-8 text-left">
+        {/* Navigation Breadcrumb & Back buttons */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <button
+            onClick={() => setActiveView('all-businesses')}
+            className="flex items-center gap-1.5 px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-750 hover:bg-slate-50 transition-all shadow-3xs cursor-pointer"
+          >
+            <ChevronLeft className="w-4 h-4 text-slate-500" />
+            <span>Back to Marketplace</span>
+          </button>
+          
+          <div className="text-[10px] text-slate-450 font-bold uppercase tracking-wider flex items-center gap-1">
+            <span>Marketplace</span>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-orange-600">{selectedProduct.category}</span>
+            <ChevronRight className="w-3 h-3" />
+            <span className="text-slate-700 truncate max-w-[150px]">{selectedProduct.name}</span>
+          </div>
+        </div>
+
+        {/* Product Detail Main Card Layout */}
+        <div className="bg-white border border-slate-200 rounded-[24px] p-5 md:p-8 shadow-2xs">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Left side: Product Image Gallery */}
+            <div className="space-y-4">
+              <div className="relative aspect-square bg-slate-50 border border-slate-100 rounded-2xl overflow-hidden shadow-3xs">
+                <img
+                  src={selectedProduct.image}
+                  className="w-full h-full object-cover"
+                  alt={selectedProduct.name}
+                />
+                <span className="absolute top-4 left-4 bg-orange-600 text-white font-black text-xs px-3 py-1 rounded-md uppercase tracking-wider shadow-2xs">
+                  -{discount}% Off
+                </span>
+                <span className="absolute bottom-4 right-4 bg-slate-900/90 backdrop-blur-xs text-white font-bold text-[9px] px-3 py-1 rounded-full uppercase tracking-wider shadow-2xs">
+                  Verified Local Store Stock
+                </span>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="aspect-square bg-slate-100 rounded-xl overflow-hidden border border-orange-500/30 cursor-pointer">
+                  <img src={selectedProduct.image} className="w-full h-full object-cover" alt="thumbnail 1" />
+                </div>
+                <div className="aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200 hover:border-slate-350 cursor-pointer opacity-80 hover:opacity-100">
+                  <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400" className="w-full h-full object-cover" alt="thumbnail 2" />
+                </div>
+                <div className="aspect-square bg-slate-100 rounded-xl overflow-hidden border border-slate-200 hover:border-slate-350 cursor-pointer opacity-80 hover:opacity-100">
+                  <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400" className="w-full h-full object-cover" alt="thumbnail 3" />
+                </div>
+              </div>
+            </div>
+
+            {/* Right side: Product purchasing metadata */}
+            <div className="flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <span className="inline-block bg-orange-50 text-orange-700 px-3 py-0.5 rounded-full font-black text-[9px] uppercase tracking-wider border border-orange-200">
+                    🛍️ Category: {selectedProduct.category.toUpperCase()}
+                  </span>
+                  <h1 className="text-xl md:text-2xl font-black text-slate-900 leading-tight tracking-tight mt-1">
+                    {selectedProduct.name}
+                  </h1>
+                </div>
+
+                {/* Rating */}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-0.5 text-amber-500">
+                    <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
+                    <span className="text-xs font-black text-slate-800">{selectedProduct.rating}</span>
+                  </div>
+                  <span className="text-[10px] bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded-md border border-slate-200 uppercase tracking-wider">
+                    Verified Customer Rating
+                  </span>
+                </div>
+
+                {/* Price block */}
+                <div className="bg-slate-50 border border-slate-200/80 p-4 rounded-2xl flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider block">Exclusive Store Price</span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-2xl font-black text-slate-900">₹{selectedProduct.price.toLocaleString()}</span>
+                      <span className="text-xs text-slate-400 line-through">₹{selectedProduct.originalPrice.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  <span className="text-[10px] bg-emerald-50 text-emerald-700 font-extrabold px-3 py-1.5 rounded-xl border border-emerald-200 uppercase tracking-wider">
+                    Save ₹{(selectedProduct.originalPrice - selectedProduct.price).toLocaleString()}
+                  </span>
+                </div>
+
+                {/* Specs / Features Grid */}
+                <div className="space-y-2">
+                  <h3 className="font-extrabold text-xs text-slate-900 uppercase tracking-wider">Product Specifications</h3>
+                  <div className="grid grid-cols-2 gap-3.5">
+                    {getSpecs(selectedProduct.category).map((spec, idx) => (
+                      <div key={idx} className="bg-white border border-slate-200 rounded-xl p-2.5 space-y-0.5 shadow-3xs">
+                        <span className="text-[8px] text-slate-400 font-black uppercase tracking-wider block">{spec.label}</span>
+                        <span className="text-[10px] text-slate-800 font-extrabold leading-tight block">{spec.val}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Vendor & Quick Contact actions */}
+              <div className="pt-4 border-t border-slate-100 space-y-4">
+                <div className="flex items-center justify-between p-3.5 bg-indigo-50/50 border border-indigo-100 rounded-2xl">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl bg-indigo-50 border border-indigo-150 p-2 rounded-xl">🏢</span>
+                    <div className="text-left">
+                      <span className="text-[8px] text-slate-400 font-bold uppercase block">Authorized Dealer</span>
+                      <h4 className="font-black text-slate-800 text-xs">{selectedProduct.vendorName}</h4>
+                      {matchedVendor && (
+                        <span className="text-[8px] text-indigo-700 font-semibold uppercase tracking-wider">
+                          📍 {matchedVendor.location.city}, {matchedVendor.location.area}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  {matchedVendor && (
+                    <button
+                      onClick={() => {
+                        setSelectedBiz(matchedVendor);
+                        setActiveView('detail');
+                      }}
+                      className="px-3.5 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 text-[9px] font-black rounded-lg transition-all shadow-3xs cursor-pointer uppercase tracking-wider shrink-0"
+                    >
+                      View Store
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => addToCart(selectedProduct, true)}
+                    className="w-full py-3 bg-slate-900 hover:bg-black text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-sm cursor-pointer transition-all text-center flex items-center justify-center gap-2"
+                  >
+                    <ShoppingCart className="w-4 h-4" /> Add to Cart
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      addToCart(selectedProduct, false);
+                      setCheckoutStep(1);
+                      setActiveView('checkout');
+                    }}
+                    className="w-full py-3 bg-orange-600 hover:bg-orange-700 text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-sm shadow-orange-600/10 cursor-pointer transition-all text-center flex items-center justify-center gap-2"
+                  >
+                    ⚡ Buy Now
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quality Audit Checklist */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white border border-slate-200 rounded-[20px] p-4 text-left shadow-3xs flex items-center gap-3">
+            <span className="text-xl bg-slate-50 p-2 border border-slate-100 rounded-lg">🛡️</span>
+            <div>
+              <h5 className="text-[10px] font-black text-slate-800 uppercase tracking-wider">Authentic Guarantee</h5>
+              <p className="text-[9px] text-slate-450 font-semibold">100% original product directly from authorized vendor</p>
+            </div>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-[20px] p-4 text-left shadow-3xs flex items-center gap-3">
+            <span className="text-xl bg-slate-50 p-2 border border-slate-100 rounded-lg">⚡</span>
+            <div>
+              <h5 className="text-[10px] font-black text-slate-800 uppercase tracking-wider">Instant Store Pickup</h5>
+              <p className="text-[9px] text-slate-450 font-semibold">Buy online & pick up immediately from nearby outlet</p>
+            </div>
+          </div>
+          <div className="bg-white border border-slate-200 rounded-[20px] p-4 text-left shadow-3xs flex items-center gap-3">
+            <span className="text-xl bg-slate-50 p-2 border border-slate-100 rounded-lg">💬</span>
+            <div>
+              <h5 className="text-[10px] font-black text-slate-800 uppercase tracking-wider">Direct Chat & Quote</h5>
+              <p className="text-[9px] text-slate-450 font-semibold">Message vendor directly to negotiate bulk pricing</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Product Reviews */}
+        <div className="bg-white border border-slate-200 rounded-[24px] p-5 md:p-6 text-left shadow-2xs space-y-4">
+          <h3 className="font-extrabold text-slate-900 text-sm tracking-tight pb-3.5 border-b border-slate-100 font-sans uppercase">Verified Outlet Reviews</h3>
+          <div className="space-y-4">
+            <div className="border-b border-slate-100 pb-4 space-y-2">
+              <div className="flex justify-between items-center">
+                <div>
+                  <span className="font-extrabold text-xs text-slate-800">Amit Sharma</span>
+                  <span className="text-[8px] bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded-full border border-slate-200 uppercase tracking-wider ml-2">Verified Buyer</span>
+                </div>
+                <span className="text-[9px] text-slate-400 font-bold">2 days ago</span>
+              </div>
+              <div className="flex items-center gap-0.5 text-amber-500 text-[10px]">
+                <span>★★★★★</span>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed font-semibold">
+                Amazing purchase! Visited the vendor store in Mumbai directly to inspect it. Highly recommend for the discounted price.
+              </p>
+            </div>
+            <div className="border-b border-slate-100 pb-4 space-y-2">
+              <div className="flex justify-between items-center">
+                <div>
+                  <span className="font-extrabold text-xs text-slate-800">Pooja Patel</span>
+                  <span className="text-[8px] bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded-full border border-slate-200 uppercase tracking-wider ml-2">Verified Buyer</span>
+                </div>
+                <span className="text-[9px] text-slate-400 font-bold">1 week ago</span>
+              </div>
+              <div className="flex items-center gap-0.5 text-amber-500 text-[10px]">
+                <span>★★★★☆</span>
+              </div>
+              <p className="text-[11px] text-slate-600 leading-relaxed font-semibold">
+                Nice product and reliable vendor. Direct support from shop owner was very helpful.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Recommended Products Carousel */}
+        {recommended.length > 0 && (
+          <div className="pt-2">
+            <ProductCarousel
+              title="✨ Recommended Products You Might Like"
+              products={recommended}
+              layoutType="minimalist"
+              setSelectedProduct={setSelectedProduct}
+              setActiveView={setActiveView}
+            />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderCheckoutWizard = () => {
+    const subtotal = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+    const shipping = 99;
+    const discount = Math.round(subtotal * 0.1); // 10% instant promo discount
+    const gst = Math.round((subtotal - discount) * 0.05); // 5% GST
+    const grandTotal = subtotal - discount + shipping + gst;
+
+    const detectCheckoutLocation = () => {
+      setIsCheckoutDetectingLocation(true);
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser");
+        setIsCheckoutDetectingLocation(false);
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          setCheckoutLatitude(lat);
+          setCheckoutLongitude(lng);
+
+          try {
+            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+            const data = await res.json();
+            if (data && data.address) {
+              const city = data.address.city || data.address.town || data.address.state || 'Mumbai';
+              const suburb = data.address.suburb || data.address.neighbourhood || data.address.locality || '';
+              const road = data.address.road || '';
+              const displayAddress = data.display_name || `${road}, ${suburb}, ${city}`;
+
+              setCheckoutCity(city);
+              setCheckoutArea(suburb);
+              setCheckoutAddress(displayAddress);
+            }
+          } catch (err) {
+            console.error("Nominatim geocode failed:", err);
+          } finally {
+            setIsCheckoutDetectingLocation(false);
+          }
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+          setIsCheckoutDetectingLocation(false);
+          alert("Unable to retrieve location: " + error.message);
+        }
+      );
+    };
+
+    const handlePlaceOrder = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!checkoutName.trim() || !checkoutPhone.trim() || !checkoutAddress.trim()) {
+        alert("Please complete the delivery details.");
+        return;
+      }
+      setCheckoutSuccess(true);
+    };
+
+    const orderId = `MEG-ORD-2026-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    if (checkoutSuccess) {
+      return (
+        <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-[24px] p-8 shadow-md text-center space-y-6">
+          <span className="text-6xl block select-none animate-bounce">🎉</span>
+          <h2 className="text-xl font-black text-slate-900 tracking-tight">Order Placed Successfully!</h2>
+          <div className="bg-emerald-50 border border-emerald-150 p-4 rounded-xl space-y-2 text-slate-800 text-left max-w-md mx-auto">
+            <p className="text-xs font-bold">Thank you for your order, <span className="text-emerald-700">{checkoutName}</span>!</p>
+            <p className="text-[10px] text-slate-505 font-semibold">Your direct local pickup/delivery code is active. Store representative will contact you on <span className="text-slate-800 font-bold">{checkoutPhone}</span>.</p>
+            <div className="border-t border-slate-200/60 pt-2 flex justify-between text-[10px] font-black uppercase text-slate-655 tracking-wider">
+              <span>Order Reference:</span>
+              <span className="text-slate-900">{orderId}</span>
+            </div>
+            <div className="flex justify-between text-[10px] font-black uppercase text-slate-655 tracking-wider">
+              <span>Grand Total Paid:</span>
+              <span className="text-slate-900">₹{grandTotal.toLocaleString()}</span>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              clearCart();
+              setCheckoutSuccess(false);
+              setCheckoutName('');
+              setCheckoutPhone('');
+              setCheckoutEmail('');
+              setCheckoutAddress('');
+              setCheckoutArea('');
+              setCheckoutStep(1);
+              setActiveView('home');
+            }}
+            className="px-6 py-3 bg-indigo-650 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm uppercase tracking-wider"
+          >
+            Continue Shopping
+          </button>
+        </div>
+      );
+    }
+
+    if (cart.length === 0) {
+      return (
+        <div className="max-w-xl mx-auto bg-white border border-slate-200 rounded-[24px] p-8 shadow-md text-center space-y-4">
+          <span className="text-5xl block select-none">🛒</span>
+          <h3 className="font-black text-slate-800 text-base">Your checkout is empty</h3>
+          <p className="text-[11px] text-slate-550 max-w-sm mx-auto leading-relaxed">
+            There are no items in your cart to process. Go back to our store marketplace to select items.
+          </p>
+          <button
+            onClick={() => setActiveView('all-businesses')}
+            className="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold rounded-lg transition-all cursor-pointer uppercase tracking-wider"
+          >
+            Go to Shop
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="max-w-3xl mx-auto space-y-6 text-left">
+        {/* Step Indicators Header */}
+        <div className="bg-white border border-slate-200 rounded-[20px] p-5 shadow-3xs flex justify-between items-center">
+          <h2 className="font-black text-slate-900 text-base">Checkout Portal</h2>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5">
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${checkoutStep >= 1 ? 'bg-orange-600 text-white' : 'bg-slate-100 text-slate-400'}`}>1</span>
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${checkoutStep === 1 ? 'text-orange-600' : 'text-slate-400'}`}>Summary</span>
+            </div>
+            <div className="w-6 h-px bg-slate-200" />
+            <div className="flex items-center gap-1.5">
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${checkoutStep >= 2 ? 'bg-orange-600 text-white' : 'bg-slate-100 text-slate-400'}`}>2</span>
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${checkoutStep === 2 ? 'text-orange-600' : 'text-slate-400'}`}>Address</span>
+            </div>
+            <div className="w-6 h-px bg-slate-200" />
+            <div className="flex items-center gap-1.5">
+              <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black ${checkoutStep >= 3 ? 'bg-orange-600 text-white' : 'bg-slate-100 text-slate-400'}`}>3</span>
+              <span className={`text-[10px] font-bold uppercase tracking-wider ${checkoutStep === 3 ? 'text-orange-600' : 'text-slate-400'}`}>Payment</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main Checkout Action Area */}
+          <div className="lg:col-span-2 space-y-6">
+            {checkoutStep === 1 && (
+              <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-2xs space-y-5">
+                <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider pb-3.5 border-b border-slate-100">1. Order Items Summary</h3>
+                <div className="space-y-3.5">
+                  {cart.map((item) => (
+                    <div key={item.product.id} className="flex gap-4 p-3 bg-slate-50 border border-slate-200 rounded-xl justify-between items-center">
+                      <div className="flex gap-3 items-center min-w-0">
+                        <img src={item.product.image} className="w-12 h-12 rounded-lg object-cover border border-slate-200 shrink-0" alt="" />
+                        <div className="min-w-0">
+                          <h4 className="font-extrabold text-[11px] text-slate-800 truncate leading-tight">{item.product.name}</h4>
+                          <span className="text-[8px] text-slate-400 font-bold uppercase block">{item.product.vendorName}</span>
+                          <span className="text-[9px] text-slate-500 font-semibold block mt-0.5">Qty: {item.quantity}</span>
+                        </div>
+                      </div>
+                      <span className="text-xs font-black text-slate-900 shrink-0">₹{(item.product.price * item.quantity).toLocaleString()}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+                  <button
+                    onClick={() => setIsCartOpen(true)}
+                    className="text-[10px] font-black text-orange-600 hover:text-orange-700 uppercase tracking-wider hover:underline"
+                  >
+                    Modify Cart Items
+                  </button>
+                  <button
+                    onClick={() => setCheckoutStep(2)}
+                    className="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-[10px] font-black rounded-lg uppercase tracking-wider shadow-xs shadow-orange-500/10 cursor-pointer"
+                  >
+                    Proceed to Delivery Details
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {checkoutStep === 2 && (
+              <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-2xs space-y-5">
+                <div className="flex justify-between items-center pb-3.5 border-b border-slate-100">
+                  <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider">2. Shipping & Delivery Address</h3>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Contact Name</label>
+                      <input
+                        type="text"
+                        value={checkoutName}
+                        onChange={(e) => setCheckoutName(e.target.value)}
+                        placeholder="e.g. Rohit Kumar"
+                        className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Phone Number</label>
+                      <input
+                        type="text"
+                        value={checkoutPhone}
+                        onChange={(e) => setCheckoutPhone(e.target.value)}
+                        placeholder="e.g. 98765 43210"
+                        className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">City</label>
+                      <input
+                        type="text"
+                        value={checkoutCity}
+                        onChange={(e) => setCheckoutCity(e.target.value)}
+                        placeholder="City name"
+                        className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Locality / Area</label>
+                      <input
+                        type="text"
+                        value={checkoutArea}
+                        onChange={(e) => setCheckoutArea(e.target.value)}
+                        placeholder="Locality area"
+                        className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Full Delivery Address</label>
+                    <textarea
+                      rows={2}
+                      value={checkoutAddress}
+                      onChange={(e) => setCheckoutAddress(e.target.value)}
+                      placeholder="Street address, building, floor..."
+                      className="w-full px-3.5 py-2.5 bg-slate-55 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black focus:bg-white text-black leading-relaxed"
+                      required
+                    />
+                  </div>
+
+                  {/* Geolocation Map Preview */}
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Live Coordinates Preview</label>
+                      <span className="text-[9px] text-slate-500 font-mono">Lat: {checkoutLatitude.toFixed(4)}, Lng: {checkoutLongitude.toFixed(4)}</span>
+                    </div>
+                    <div className="w-full h-44 bg-slate-100 rounded-xl overflow-hidden border border-slate-200 relative shadow-inner">
+                      <iframe
+                        className="w-full h-full border-none pointer-events-none"
+                        src={`https://www.openstreetmap.org/export/embed.html?bbox=${checkoutLongitude-0.005}%2C${checkoutLatitude-0.005}%2C${checkoutLongitude+0.005}%2C${checkoutLatitude+0.005}&layer=mapnik&marker=${checkoutLatitude}%2C${checkoutLongitude}`}
+                        title="Delivery Location Preview Map"
+                      />
+                      <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/10 to-transparent" />
+                      
+                      {/* Floating Use My Current Location button */}
+                      <button
+                        type="button"
+                        onClick={detectCheckoutLocation}
+                        disabled={isCheckoutDetectingLocation}
+                        className="absolute bottom-3 right-3 bg-orange-600 hover:bg-orange-700 disabled:bg-orange-400 text-white font-black text-[9px] uppercase tracking-wider px-3.5 py-2 rounded-xl shadow-md flex items-center gap-1.5 z-10 transition-all active:scale-95 cursor-pointer"
+                      >
+                        {isCheckoutDetectingLocation ? (
+                          <>⏳ Locating...</>
+                        ) : (
+                          <>📍 Use My Current Location</>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+                  <button
+                    onClick={() => setCheckoutStep(1)}
+                    className="text-[10px] font-black text-slate-500 hover:text-slate-800 uppercase tracking-wider"
+                  >
+                    Back to Summary
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!checkoutName.trim() || !checkoutPhone.trim() || !checkoutAddress.trim()) {
+                        alert("Please fill out all address fields");
+                        return;
+                      }
+                      setCheckoutStep(3);
+                    }}
+                    className="px-5 py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-[10px] font-black rounded-lg uppercase tracking-wider shadow-xs shadow-orange-500/10 cursor-pointer"
+                  >
+                    Proceed to Payment Options
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {checkoutStep === 3 && (
+              <div className="bg-white border border-slate-200 rounded-[20px] p-6 shadow-2xs space-y-5">
+                <h3 className="font-extrabold text-slate-800 text-sm uppercase tracking-wider pb-3.5 border-b border-slate-100">3. Select Payment Screen</h3>
+                
+                <div className="space-y-3">
+                  {[
+                    { id: 'UPI', label: 'UPI - Instant Transfer (GPay / PhonePe / Paytm)', desc: 'Pay instantly using UPI QR or secure UPI ID.', icon: '📱' },
+                    { id: 'Card', label: 'Credit or Debit Card', desc: 'Secure payment via Visa, Mastercard, RuPay, or Amex.', icon: '💳' },
+                    { id: 'Netbanking', label: 'Net Banking', desc: 'Direct secure bank account payment.', icon: '🏦' },
+                    { id: 'COD', label: 'Cash on Delivery (COD)', desc: 'Pay with cash at time of store pickup or local delivery.', icon: '💵' }
+                  ].map((method) => (
+                    <label
+                      key={method.id}
+                      onClick={() => setCheckoutPaymentMethod(method.id)}
+                      className={`flex gap-4 p-4 border rounded-xl cursor-pointer transition-all ${checkoutPaymentMethod === method.id ? 'bg-orange-50/50 border-orange-500 text-slate-850' : 'bg-white border-slate-200 hover:bg-slate-50'}`}
+                    >
+                      <input
+                        type="radio"
+                        name="payment_method"
+                        checked={checkoutPaymentMethod === method.id}
+                        readOnly
+                        className="accent-orange-600 mt-1 cursor-pointer shrink-0"
+                      />
+                      <div className="flex-1 text-left">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-base select-none shrink-0">{method.icon}</span>
+                          <span className="text-xs font-black text-slate-900">{method.label}</span>
+                        </div>
+                        <p className="text-[10px] text-slate-505 font-semibold mt-1 leading-normal">{method.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+
+                {checkoutPaymentMethod === 'UPI' && (
+                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3 text-center">
+                    <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider block">Unified Payments Interface</span>
+                    <div className="w-32 h-32 bg-white border border-slate-200 mx-auto flex items-center justify-center text-5xl select-none">
+                      📱
+                    </div>
+                    <p className="text-[9px] text-slate-505 font-semibold max-w-xs mx-auto">
+                      Scan this QR code from your preferred payment app to authenticate your secure instant checkout transfer.
+                    </p>
+                  </div>
+                )}
+
+                {checkoutPaymentMethod === 'Card' && (
+                  <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="block text-[8px] font-black text-slate-400 uppercase tracking-wider">Card Number</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. 4111 2222 3333 4444"
+                          className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black text-black"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <label className="block text-[8px] font-black text-slate-400 uppercase tracking-wider">Expiry</label>
+                          <input
+                            type="text"
+                            placeholder="MM/YY"
+                            className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black text-black"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="block text-[8px] font-black text-slate-400 uppercase tracking-wider">CVV</label>
+                          <input
+                            type="password"
+                            placeholder="***"
+                            className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-black text-black"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex justify-between items-center pt-4 border-t border-slate-100">
+                  <button
+                    onClick={() => setCheckoutStep(2)}
+                    className="text-[10px] font-black text-slate-505 hover:text-slate-800 uppercase tracking-wider"
+                  >
+                    Back to Address
+                  </button>
+                  <button
+                    onClick={handlePlaceOrder}
+                    className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white text-xs font-black rounded-xl uppercase tracking-wider shadow-xs shadow-orange-500/10 cursor-pointer flex items-center gap-1.5"
+                  >
+                    Check & Place Order
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Pricing Breakdowns Summary Sidebar */}
+          <div className="space-y-6">
+            <div className="bg-white border border-slate-200 rounded-[20px] p-5 shadow-2xs space-y-4">
+              <h3 className="font-extrabold text-slate-850 text-xs uppercase tracking-wider pb-3 border-b border-slate-100">Payment Summary</h3>
+              <div className="space-y-2.5 text-[11px] font-semibold text-slate-600">
+                <div className="flex justify-between">
+                  <span>Cart Subtotal:</span>
+                  <span className="text-slate-900 font-bold">₹{subtotal.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-emerald-600 font-bold">
+                  <span>Instant 10% Discount:</span>
+                  <span>-₹{discount.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Taxes (5% GST):</span>
+                  <span className="text-slate-900 font-bold">₹{gst.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Shipping & Handling:</span>
+                  <span className="text-slate-900 font-bold">₹{shipping.toLocaleString()}</span>
+                </div>
+                <div className="border-t border-slate-100 pt-3 flex justify-between text-xs font-black text-slate-900">
+                  <span className="uppercase tracking-wider">Total Payable:</span>
+                  <span className="text-orange-600 text-sm">₹{grandTotal.toLocaleString()}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-slate-900 text-white rounded-[20px] p-5 shadow-2xs space-y-3 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-2xl pointer-events-none" />
+              <h4 className="font-extrabold text-xs uppercase tracking-wider text-orange-400">Direct Store Checkout</h4>
+              <p className="text-[10px] text-slate-350 leading-relaxed font-semibold">
+                Your order is routed directly to the verified local outlets. Free pickup or flat delivery rate is secured by Meganods local direct warranty check.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   const renderInquiryChat = () => {
     if (!inquiryBiz) return null;
 
@@ -1110,70 +2355,185 @@ export default function UserWebsite() {
   };
 
   const renderRegisterWizard = () => {
-    const handleNext = () => {
-      if (registerStep === 1 && (!regName.trim() || !regOwner.trim() || !regAbout.trim())) {
-        alert("Please fill in all basic details.");
+    const handleSendOtp = () => {
+      if (!regPhone.trim()) {
+        alert("Please enter your phone number first.");
         return;
       }
-      if (registerStep === 2 && (!regPhone.trim() || !regEmail.trim())) {
-        alert("Please fill in contact details.");
-        return;
-      }
-      if (registerStep === 3 && (!regArea.trim() || !regAddress.trim())) {
-        alert("Please fill in location details.");
-        return;
-      }
-      setRegisterStep(prev => Math.min(prev + 1, 4));
+      setIsSendingOtp(true);
+      setTimeout(() => {
+        const code = Math.floor(1000 + Math.random() * 9000).toString();
+        setOtpCode(code);
+        setOtpSent(true);
+        setIsSendingOtp(false);
+        alert(`[SMS verification MOCK] Code sent to ${regPhone}: ${code}`);
+      }, 700);
     };
 
-    const handleBack = () => {
-      setRegisterStep(prev => Math.max(prev - 1, 1));
+    const handleVerifyOtp = () => {
+      if (!enteredOtp.trim()) {
+        alert("Please enter the verification code.");
+        return;
+      }
+      setIsVerifyingOtp(true);
+      setTimeout(() => {
+        if (enteredOtp === otpCode) {
+          setIsOtpVerified(true);
+          setIsVerifyingOtp(false);
+          alert("Mobile verified successfully!");
+        } else {
+          setIsVerifyingOtp(false);
+          alert("Invalid verification code. Please try again.");
+        }
+      }, 500);
+    };
+
+    const handleDetectLocation = () => {
+      if (typeof window === 'undefined' || !navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
+      setIsDetectingLocation(true);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          setRegLatitude(lat);
+          setRegLongitude(lon);
+
+          // Reverse geocoding fetch from OSM Nominatim
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+            .then(res => res.json())
+            .then(data => {
+              setIsDetectingLocation(false);
+              if (data && data.address) {
+                const city = data.address.city || data.address.town || data.address.state || "Mumbai";
+                const road = data.address.road || "";
+                const suburb = data.address.suburb || data.address.neighbourhood || "";
+                const area = suburb || data.address.county || "";
+                const address = data.display_name || `${road}, ${suburb}, ${city}`;
+
+                setRegCity(city);
+                setRegArea(area);
+                setRegAddress(address);
+                alert("Location auto-filled successfully!");
+              } else {
+                setRegCity("Mumbai");
+                setRegArea("Andheri East");
+                setRegAddress(`Latitude: ${lat.toFixed(4)}, Longitude: ${lon.toFixed(4)}`);
+                alert("Location detected! Auto-filled using fallback coordinates.");
+              }
+            })
+            .catch(err => {
+              setIsDetectingLocation(false);
+              console.error(err);
+              setRegCity("Mumbai");
+              setRegArea("Andheri East");
+              setRegAddress(`Latitude: ${lat.toFixed(4)}, Longitude: ${lon.toFixed(4)}`);
+              alert("Location coordinates detected! Lookup failed, filled using coordinates.");
+            });
+        },
+        (error) => {
+          setIsDetectingLocation(false);
+          alert(`Unable to retrieve your location. Details: ${error.message}. Fallback coordinates loaded.`);
+          setRegLatitude(19.1197);
+          setRegLongitude(72.8464);
+          setRegCity("Mumbai");
+          setRegArea("Andheri East");
+          setRegAddress("Shop 4, Patel Complex, Andheri East, Mumbai - 400059");
+        },
+        { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      );
     };
 
     const handleCreateProfile = () => {
-      if (!regServicesText.trim()) {
-        alert("Please add at least one core service.");
+      if (!regName.trim() || !regOwner.trim() || !regAbout.trim() || !regPhone.trim() || !regEmail.trim() || !regArea.trim() || !regAddress.trim()) {
+        alert("Please fill in all required form fields first.");
         return;
       }
 
-      const servicesArray = regServicesText.split(',').map(s => s.trim()).filter(Boolean);
+      if (!isOtpVerified) {
+        alert("Please complete mobile phone verification first before publishing profile.");
+        return;
+      }
 
-      const newBiz: Business = {
-        id: `biz-user-${Date.now()}`,
-        name: regName,
-        owner: regOwner,
-        email: regEmail,
-        phone: regPhone,
-        category: regCategory,
-        location: {
-          city: regCity,
-          area: regArea,
-          locality: regArea,
-          address: regAddress
-        },
-        status: 'Premium',
-        subscription: 'Platinum',
-        rating: 5.0,
-        leadsCount: 0,
-        createdDate: new Date().toISOString().split('T')[0],
-        logo: regLogo,
-        images: ['https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800'],
-        about: regAbout,
-        services: servicesArray,
-        products: ['Premium Care Services'],
-        businessHours: regHours,
-        revenue: 0,
-        ratingAnalytics: { stars5: 1, stars4: 0, stars3: 0, stars2: 0, stars1: 0 }
-      };
+      if (registerType === 'service') {
+        if (!regServicesText.trim()) {
+          alert("Please add at least one core service.");
+          return;
+        }
 
-      // Add to global context
-      businesses.unshift(newBiz);
+        const servicesArray = regServicesText.split(',').map(s => s.trim()).filter(Boolean);
 
-      // Save to localStorage
-      localStorage.setItem('registeredBusiness', JSON.stringify(newBiz));
-      setCurrentUser(newBiz);
+        const newBiz: Business = {
+          id: `biz-user-${Date.now()}`,
+          name: regName,
+          owner: regOwner,
+          email: regEmail,
+          phone: regPhone,
+          category: regCategory,
+          businessType: 'service',
+          location: {
+            city: regCity,
+            area: regArea,
+            locality: regArea,
+            address: regAddress
+          },
+          status: 'Premium',
+          subscription: 'Platinum',
+          rating: 5.0,
+          leadsCount: 0,
+          createdDate: new Date().toISOString().split('T')[0],
+          logo: regLogo,
+          images: ['https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800'],
+          about: regAbout,
+          services: servicesArray,
+          products: [],
+          businessHours: regHours,
+          revenue: 0,
+          ratingAnalytics: { stars5: 1, stars4: 0, stars3: 0, stars2: 0, stars1: 0 }
+        };
 
-      alert(`Congratulations! ${regName} profile has been created successfully!`);
+        businesses.unshift(newBiz);
+        localStorage.setItem('registeredBusiness', JSON.stringify(newBiz));
+        setCurrentUser(newBiz);
+        alert(`Congratulations! Service Provider profile for "${regName}" has been created successfully!`);
+      } else {
+        const newBiz: Business = {
+          id: `biz-user-${Date.now()}`,
+          name: regName,
+          owner: regOwner,
+          email: regEmail,
+          phone: regPhone,
+          category: regProductCategory,
+          businessType: 'vendor',
+          location: {
+            city: regCity,
+            area: regArea,
+            locality: regArea,
+            address: regAddress
+          },
+          status: 'Premium',
+          subscription: 'Platinum',
+          rating: 5.0,
+          leadsCount: 0,
+          createdDate: new Date().toISOString().split('T')[0],
+          logo: regLogo,
+          images: ['https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800'],
+          about: regAbout,
+          services: [],
+          products: [],
+          businessHours: regHours,
+          revenue: 0,
+          ratingAnalytics: { stars5: 1, stars4: 0, stars3: 0, stars2: 0, stars1: 0 }
+        };
+
+        businesses.unshift(newBiz);
+        localStorage.setItem('registeredBusiness', JSON.stringify(newBiz));
+        setCurrentUser(newBiz);
+
+        alert(`Congratulations! E-commerce Vendor profile for "${regName}" has been created successfully!`);
+      }
 
       // Clear inputs
       setRegName('');
@@ -1184,137 +2544,187 @@ export default function UserWebsite() {
       setRegArea('');
       setRegAddress('');
       setRegServicesText('');
+      setRegProductName('');
+      setRegProductPrice('');
+      setRegisterType(null);
+      setRegisterStep(1);
+      setIsOtpVerified(false);
+      setOtpSent(false);
 
       setActiveView('home');
     };
 
-    return (
-      <div className="max-w-2xl mx-auto bg-white border border-slate-200 rounded-[24px] p-8 shadow-md text-left space-y-6">
-        <div className="space-y-2">
-          <span className="text-[9px] bg-indigo-50 text-indigo-650 font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
-            Partner Registration Wizard
-          </span>
-          <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">Create your Business Profile</h2>
-          <p className="text-xs text-slate-500 font-semibold leading-relaxed">
-            Fill in the 4 simple steps below to register your company and start generating direct consumer hot leads.
-          </p>
-        </div>
+    if (registerType === null) {
+      return (
+        <div className="max-w-2xl mx-auto bg-white border border-slate-200 rounded-[24px] p-8 shadow-md text-left space-y-6">
+          <div className="space-y-2 text-center">
+            <span className="text-[9px] bg-indigo-50 text-indigo-650 font-black px-2.5 py-1 rounded-full uppercase tracking-wider inline-block">
+              Choose Registration Mode
+            </span>
+            <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">How would you like to partner with us?</h2>
+            <p className="text-xs text-slate-500 font-semibold max-w-md mx-auto">
+              Select the option that best fits your business model to access custom onboarding and management consoles.
+            </p>
+          </div>
 
-        {/* Steps Progress Header */}
-        <div className="grid grid-cols-4 gap-2 border-b border-slate-100 pb-5">
-          {[
-            { num: 1, label: "Basic Info" },
-            { num: 2, label: "Contact Details" },
-            { num: 3, label: "Location details" },
-            { num: 4, label: "Services Offered" }
-          ].map((s) => (
-            <div key={s.num} className="space-y-2">
-              <div className={`h-1.5 rounded-full transition-all duration-300 ${registerStep >= s.num ? 'bg-indigo-600' : 'bg-slate-100'}`} />
-              <div className="hidden sm:block">
-                <span className={`block text-[9px] font-black uppercase tracking-wider ${registerStep >= s.num ? 'text-indigo-600' : 'text-slate-400'}`}>
-                  Step {s.num}
-                </span>
-                <span className={`block text-[10px] font-bold truncate ${registerStep >= s.num ? 'text-slate-800' : 'text-slate-400'}`}>
-                  {s.label}
-                </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+            {/* Service Provider Card */}
+            <div
+              onClick={() => {
+                setRegisterType('service');
+                setRegisterStep(1);
+                setRegLogo('🏢');
+              }}
+              className="border-2 border-slate-100 hover:border-indigo-500 bg-white hover:bg-slate-50/50 p-6 rounded-[20px] cursor-pointer transition-all hover:shadow-md text-left space-y-4 group"
+            >
+              <div className="text-4xl p-3 bg-indigo-50 rounded-2xl w-fit group-hover:scale-105 transition-transform">🛠️</div>
+              <h3 className="font-black text-slate-900 text-sm">Local Service Provider</h3>
+              <p className="text-[10px] text-slate-500 leading-relaxed font-semibold">
+                Perfect for Packers & Movers, Dentists, Hotels, Restaurants, beauty parlours, gyms, or repair centers.
+              </p>
+              <div className="text-[9px] text-indigo-600 font-extrabold uppercase tracking-wider flex items-center gap-1 pt-2">
+                <span>Start Service Onboarding</span>
+                <span>→</span>
               </div>
             </div>
-          ))}
+
+            {/* Vendor Card */}
+            <div
+              onClick={() => {
+                setRegisterType('vendor');
+                setRegisterStep(1);
+                setRegLogo('🛒');
+              }}
+              className="border-2 border-slate-100 hover:border-orange-500 bg-white hover:bg-slate-55 p-6 rounded-[20px] cursor-pointer transition-all hover:shadow-md text-left space-y-4 group"
+            >
+              <div className="text-4xl p-3 bg-orange-50 rounded-2xl w-fit group-hover:scale-105 transition-transform">🛒</div>
+              <h3 className="font-black text-slate-900 text-sm">E-commerce Product Seller</h3>
+              <p className="text-[10px] text-slate-500 leading-relaxed font-semibold">
+                Perfect for wholesale electronics dealers, clothing brands, grocery stores, home decor, or digital goods sellers.
+              </p>
+              <div className="text-[9px] text-orange-600 font-extrabold uppercase tracking-wider flex items-center gap-1 pt-2">
+                <span>Start Product Selling Onboarding</span>
+                <span>→</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center pt-4 border-t border-slate-100">
+            <button
+              type="button"
+              onClick={() => setActiveView('home')}
+              className="text-xs text-slate-400 hover:text-slate-600 font-bold"
+            >
+              Back to Home
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="max-w-4xl mx-auto bg-white border border-slate-200 rounded-[28px] p-6 sm:p-10 shadow-lg text-left space-y-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-100">
+          <div className="space-y-1">
+            <span className={`text-[9px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider ${registerType === 'service' ? 'bg-indigo-50 text-indigo-700' : 'bg-orange-50 text-orange-700'}`}>
+              {registerType === 'service' ? 'Service Partner Console' : 'E-commerce Seller Console'}
+            </span>
+            <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight mt-1.5">
+              {registerType === 'service' ? 'Register as Local Service Provider' : 'Register as Product Vendor'}
+            </h2>
+            <p className="text-xs text-slate-500 font-semibold">
+              Fill in all details below in a single form to list your business on the directory portal.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setRegisterType(null)}
+            className="px-3.5 py-1.5 bg-slate-50 border border-slate-200 hover:border-slate-350 text-slate-655 font-bold rounded-xl text-[10px] transition-all cursor-pointer"
+          >
+            Change Partner Type
+          </button>
         </div>
 
-        {/* Wizard Form Screens */}
-        <div className="min-h-[220px]">
-          {registerStep === 1 && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Business Name</label>
-                  <input
-                    type="text"
-                    value={regName}
-                    onChange={(e) => setRegName(e.target.value)}
-                    placeholder="e.g. Imperial Movers"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 text-slate-850"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Owner Name</label>
-                  <input
-                    type="text"
-                    value={regOwner}
-                    onChange={(e) => setRegOwner(e.target.value)}
-                    placeholder="e.g. Digvijay Sen"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 text-slate-850"
-                  />
-                </div>
-              </div>
+        <form onSubmit={(e) => { e.preventDefault(); handleCreateProfile(); }} className="space-y-8">
 
-              <div className="space-y-1.5">
-                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Primary Category</label>
-                <select
-                  value={regCategory}
-                  onChange={(e) => setRegCategory(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-indigo-600 text-slate-850 cursor-pointer"
-                >
-                  <option value="Packers & Movers">Packers & Movers</option>
-                  <option value="Dentists">Dentists</option>
-                  <option value="Hotels">Hotels</option>
-                  <option value="Restaurants">Restaurants</option>
-                  <option value="Electronic Goods Dealers">Electronic Goods Dealers</option>
-                  <option value="Courier Services">Courier Services</option>
-                  <option value="Beauty Parlours">Beauty Parlours</option>
-                  <option value="Gyms & Fitness">Gyms & Fitness</option>
-                </select>
-              </div>
+          {/* Section 1: Basic Information */}
+          <div className="space-y-4">
+            <h3 className="font-black text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2 border-b pb-2 border-slate-100">
+              <span className={`w-5 h-5 flex items-center justify-center rounded-md text-[10px] font-black ${registerType === 'service' ? 'bg-indigo-50 text-indigo-700' : 'bg-orange-50 text-orange-700'}`}>1</span>
+              Company & Owner Profile
+            </h3>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">About Business / Description</label>
-                <textarea
-                  rows={3}
-                  value={regAbout}
-                  onChange={(e) => setRegAbout(e.target.value)}
-                  placeholder="Detail your company, specialization, years of experience..."
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 text-slate-850 leading-relaxed"
+                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  {registerType === 'service' ? 'Registered Business Name' : 'Shop / Store Name'}
+                </label>
+                <input
+                  type="text"
+                  value={regName}
+                  onChange={(e) => setRegName(e.target.value)}
+                  placeholder={registerType === 'service' ? 'e.g. Imperial Movers' : 'e.g. Smart Solution Retail'}
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-slate-400 text-slate-850"
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Owner / Manager Name</label>
+                <input
+                  type="text"
+                  value={regOwner}
+                  onChange={(e) => setRegOwner(e.target.value)}
+                  placeholder="e.g. Digvijay Sen"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-slate-400 text-slate-850"
+                  required
                 />
               </div>
             </div>
-          )}
 
-          {registerStep === 2 && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Business Phone number</label>
-                  <input
-                    type="tel"
-                    value={regPhone}
-                    onChange={(e) => setRegPhone(e.target.value)}
-                    placeholder="e.g. +91 99999 88888"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 text-slate-850"
-                  />
-                </div>
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Business Email Address</label>
-                  <input
-                    type="email"
-                    value={regEmail}
-                    onChange={(e) => setRegEmail(e.target.value)}
-                    placeholder="e.g. contact@imperialmovers.com"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 text-slate-850"
-                  />
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Primary Category</label>
+                {registerType === 'service' ? (
+                  <select
+                    value={regCategory}
+                    onChange={(e) => setRegCategory(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-slate-400 text-slate-850 cursor-pointer"
+                  >
+                    <option value="Packers & Movers">Packers & Movers</option>
+                    <option value="Dentists">Dentists</option>
+                    <option value="Hotels">Hotels</option>
+                    <option value="Restaurants">Restaurants</option>
+                    <option value="Courier Services">Courier Services</option>
+                    <option value="Beauty Parlours">Beauty Parlours</option>
+                    <option value="Gyms & Fitness">Gyms & Fitness</option>
+                  </select>
+                ) : (
+                  <select
+                    value={regProductCategory}
+                    onChange={(e) => setRegProductCategory(e.target.value)}
+                    className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-slate-400 text-slate-850 cursor-pointer"
+                  >
+                    <option value="Electronic Goods Dealers">Electronics & Hardware</option>
+                    <option value="Apparel & Clothing">Apparel & Clothing</option>
+                    <option value="Home decor & Furniture">Home decor & Furniture</option>
+                    <option value="Beauty & Cosmetics">Beauty & Cosmetics</option>
+                    <option value="Sports & Fitness Goods">Sports & Fitness Goods</option>
+                  </select>
+                )}
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Select Brand Profile Logo Emoji</label>
-                <div className="flex gap-3 mt-1.5 flex-wrap">
-                  {['📦', '🦷', '🏨', '🥗', '🔌', '🚚', '💄', '🏋️‍♂️', '🏢', '🛠️'].map((emoji) => (
+                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Select Brand Logo Emoji</label>
+                <div className="flex gap-2 flex-wrap mt-1">
+                  {(registerType === 'service'
+                    ? ['🏢', '📦', '🦷', '🏨', '🥗', '🚚', '💄', '🏋️‍♂️']
+                    : ['🛒', '🔌', '👕', '🍳', '💄', '⚽', '📦', '💻']
+                  ).map((emoji) => (
                     <button
                       key={emoji}
                       type="button"
                       onClick={() => setRegLogo(emoji)}
-                      className={`text-2xl p-2.5 rounded-xl border transition-all cursor-pointer ${regLogo === emoji ? 'bg-indigo-50 border-indigo-500 scale-110 shadow-3xs' : 'bg-slate-50 border-slate-200 hover:border-slate-350'
-                        }`}
+                      className={`text-xl p-2 rounded-xl border transition-all cursor-pointer ${regLogo === emoji ? (registerType === 'service' ? 'bg-indigo-50 border-indigo-500 scale-105 shadow-2xs' : 'bg-orange-50 border-orange-500 scale-105 shadow-2xs') : 'bg-slate-50 border-slate-200 hover:border-slate-350'}`}
                     >
                       {emoji}
                     </button>
@@ -1322,115 +2732,287 @@ export default function UserWebsite() {
                 </div>
               </div>
             </div>
-          )}
 
-          {registerStep === 3 && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">City</label>
-                  <select
-                    value={regCity}
-                    onChange={(e) => setRegCity(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-indigo-600 text-slate-850 cursor-pointer"
-                  >
-                    <option value="Mumbai">Mumbai</option>
-                    <option value="Delhi">Delhi</option>
-                    <option value="Bangalore">Bangalore</option>
-                    <option value="Jaipur">Jaipur</option>
-                    <option value="Kolkata">Kolkata</option>
-                    <option value="Chennai">Chennai</option>
-                  </select>
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Company Bio / Description</label>
+              <textarea
+                rows={3}
+                value={regAbout}
+                onChange={(e) => setRegAbout(e.target.value)}
+                placeholder={registerType === 'service' ? 'Detail your company background, service capabilities...' : 'Describe what products your store sells, brand values...'}
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-slate-400 text-slate-850 leading-relaxed"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Section 2: Contact Info & OTP Authentication */}
+          <div className="space-y-4 bg-slate-50 p-5 rounded-2xl border border-slate-150">
+            <h3 className="font-black text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2 border-b pb-2 border-slate-200">
+              <span className={`w-5 h-5 flex items-center justify-center rounded-md text-[10px] font-black ${registerType === 'service' ? 'bg-indigo-50 text-indigo-700' : 'bg-orange-50 text-orange-700'}`}>2</span>
+              Contact Info & Mobile Verification
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {/* Phone Input with Send OTP */}
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Business Mobile Phone</label>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <input
+                      type="tel"
+                      value={regPhone}
+                      onChange={(e) => {
+                        setRegPhone(e.target.value);
+                        setIsOtpVerified(false);
+                        setOtpSent(false);
+                      }}
+                      placeholder="e.g. 9876543210"
+                      disabled={isOtpVerified}
+                      className={`w-full px-3.5 py-2.5 bg-white border rounded-xl text-xs font-semibold focus:outline-none focus:border-slate-450 text-slate-850 ${isOtpVerified ? 'border-emerald-500 bg-emerald-50/50 pr-8' : 'border-slate-200'}`}
+                      required
+                    />
+                    {isOtpVerified && (
+                      <span className="absolute right-3 top-2.5 text-emerald-600 text-xs font-bold" title="Verified Mobile">✓</span>
+                    )}
+                  </div>
+                  {!isOtpVerified && (
+                    <button
+                      type="button"
+                      onClick={handleSendOtp}
+                      disabled={isSendingOtp}
+                      className={`px-4 py-2 text-[10px] font-black rounded-xl border text-white transition-all cursor-pointer ${registerType === 'service' ? 'bg-indigo-600 hover:bg-indigo-700 border-indigo-200' : 'bg-orange-500 hover:bg-orange-600 border-orange-200'}`}
+                    >
+                      {isSendingOtp ? 'Sending...' : (otpSent ? 'Resend' : 'Verify SMS')}
+                    </button>
+                  )}
                 </div>
-                <div className="space-y-1.5">
-                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Area / Locality</label>
+                {isOtpVerified && (
+                  <span className="text-[9px] text-emerald-600 font-extrabold uppercase flex items-center gap-1 mt-1">
+                    🟢 Phone Verified Partner Account
+                  </span>
+                )}
+              </div>
+
+              {/* Email Address */}
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Corporate Email Address</label>
+                <input
+                  type="email"
+                  value={regEmail}
+                  onChange={(e) => setRegEmail(e.target.value)}
+                  placeholder="e.g. info@firmname.com"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-slate-450 text-slate-850"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* OTP Verification code box */}
+            {otpSent && !isOtpVerified && (
+              <div className="bg-white p-4 rounded-xl border border-slate-200 mt-3 space-y-2 max-w-sm">
+                <span className="text-[9px] text-slate-400 font-black uppercase tracking-wider block">Enter 4-Digit Code</span>
+                <div className="flex gap-2">
                   <input
                     type="text"
-                    value={regArea}
-                    onChange={(e) => setRegArea(e.target.value)}
-                    placeholder="e.g. Andheri East"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 text-slate-850"
+                    maxLength={4}
+                    value={enteredOtp}
+                    onChange={(e) => setEnteredOtp(e.target.value)}
+                    placeholder="e.g. 1234"
+                    className="flex-1 px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-center tracking-widest text-slate-850"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleVerifyOtp}
+                    disabled={isVerifyingOtp}
+                    className="px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-lg text-[10px]"
+                  >
+                    {isVerifyingOtp ? 'Checking...' : 'Submit OTP'}
+                  </button>
+                </div>
+                <span className="text-[8px] text-slate-400 font-medium block">A mock SMS notification alert will display the code above.</span>
+              </div>
+            )}
+          </div>
+
+          {/* Section 3: Geolocation Auto-Detect & Address */}
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b pb-2 border-slate-100">
+              <h3 className="font-black text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2">
+                <span className={`w-5 h-5 flex items-center justify-center rounded-md text-[10px] font-black ${registerType === 'service' ? 'bg-indigo-50 text-indigo-700' : 'bg-orange-50 text-orange-700'}`}>3</span>
+                Warehouse / Office Location Details
+              </h3>
+              <button
+                type="button"
+                onClick={handleDetectLocation}
+                disabled={isDetectingLocation}
+                className={`px-3.5 py-1.5 rounded-xl border font-bold text-[10px] flex items-center gap-1 cursor-pointer transition-all ${registerType === 'service' ? 'bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100' : 'bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100'}`}
+              >
+                📍 {isDetectingLocation ? 'Locating Store...' : 'Detect Current Location'}
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">City / Hub Location</label>
+                <select
+                  value={regCity}
+                  onChange={(e) => setRegCity(e.target.value)}
+                  className="w-full bg-slate-55 border border-slate-200 px-3.5 py-2.5 rounded-xl text-xs font-bold focus:outline-none focus:border-slate-400 text-slate-850 cursor-pointer"
+                >
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Bangalore">Bangalore</option>
+                  <option value="Jaipur">Jaipur</option>
+                  <option value="Kolkata">Kolkata</option>
+                  <option value="Chennai">Chennai</option>
+                </select>
+              </div>
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Area / Locality</label>
+                <input
+                  type="text"
+                  value={regArea}
+                  onChange={(e) => setRegArea(e.target.value)}
+                  placeholder="e.g. Connaught Place"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-slate-400 text-slate-850"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Full Listing Address</label>
+              <textarea
+                rows={2}
+                value={regAddress}
+                onChange={(e) => setRegAddress(e.target.value)}
+                placeholder="Full storefront / warehouse plot address details..."
+                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-slate-400 text-slate-850 leading-relaxed"
+                required
+              />
+            </div>
+
+            {/* Embedded Live Leaflet Map Frame */}
+            <div className="border border-slate-200 rounded-2xl overflow-hidden h-52 bg-slate-100 shadow-2xs relative">
+              <iframe
+                title="Office Location Map Preview"
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                scrolling="no"
+                marginHeight={0}
+                marginWidth={0}
+                src={`https://www.openstreetmap.org/export/embed.html?bbox=${regLongitude - 0.015}%2C${regLatitude - 0.01}%2C${regLongitude + 0.015}%2C${regLatitude + 0.01}&layer=mapnik&marker=${regLatitude}%2C${regLongitude}`}
+              />
+
+              {/* Floating Action Button for Location Detection */}
+              <div className="absolute top-3 left-3">
+                <button
+                  type="button"
+                  onClick={handleDetectLocation}
+                  disabled={isDetectingLocation}
+                  className="px-3 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-extrabold text-[11px] rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 hover:shadow-lg disabled:opacity-75"
+                >
+                  <span className="text-sm">📍</span> {isDetectingLocation ? 'Locating Store...' : 'Use Current Location'}
+                </button>
+              </div>
+
+              <div className="absolute bottom-2 right-2 bg-white/95 border border-slate-200 px-2.5 py-1 rounded-md text-[8px] font-extrabold text-slate-655 tracking-wider shadow-2xs pointer-events-none uppercase">
+                🌐 Live OpenStreetMap Preview
+              </div>
+            </div>
+          </div>
+
+          {/* Section 4: Specialty Specific Configurations */}
+          <div className="space-y-4 bg-slate-50/50 p-5 border border-slate-150 rounded-2xl">
+            <h3 className="font-black text-slate-800 text-xs uppercase tracking-wider flex items-center gap-2 border-b pb-2 border-slate-200">
+              <span className={`w-5 h-5 flex items-center justify-center rounded-md text-[10px] font-black ${registerType === 'service' ? 'bg-indigo-50 text-indigo-700' : 'bg-orange-50 text-orange-700'}`}>4</span>
+              Specialty Setup & Configurations
+            </h3>
+
+            {registerType === 'service' ? (
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Business Operating Hours</label>
+                  <input
+                    type="text"
+                    value={regHours}
+                    onChange={(e) => setRegHours(e.target.value)}
+                    placeholder="e.g. 09:00 AM - 08:00 PM (Mon-Sun)"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-slate-400 text-slate-850"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Core Services Provided (Comma Separated)</label>
+                  <textarea
+                    rows={2.5}
+                    value={regServicesText}
+                    onChange={(e) => setRegServicesText(e.target.value)}
+                    placeholder="e.g. Local Packing, Interstate Shifting, Warehousing, Office Relocation"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-slate-400 text-slate-850 leading-relaxed"
                   />
                 </div>
               </div>
-
-              <div className="space-y-1.5">
-                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Full Office Address</label>
-                <textarea
-                  rows={2}
-                  value={regAddress}
-                  onChange={(e) => setRegAddress(e.target.value)}
-                  placeholder="e.g. Shop 2, Ground Floor, Sai Complex, Andheri East, Mumbai - 400059"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 text-slate-850 leading-relaxed"
-                />
+            ) : (
+              <div className="space-y-4">
+                <div className="bg-orange-50 border border-orange-100 p-3.5 rounded-xl text-[10px] font-semibold text-orange-950">
+                  🎁 **Vendor Shop Dashboard Access**: Fill this in to create your first catalog product listing, which will automatically show up on your seller page.
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <label className="block text-[9px] font-black text-slate-455 uppercase tracking-wider">First Product Title</label>
+                    <input
+                      type="text"
+                      value={regProductName}
+                      onChange={(e) => setRegProductName(e.target.value)}
+                      placeholder="e.g. CCTV Security Cam"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-orange-500 text-slate-800"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="block text-[9px] font-black text-slate-455 uppercase tracking-wider">Selling Price (INR)</label>
+                    <input
+                      type="number"
+                      value={regProductPrice}
+                      onChange={(e) => setRegProductPrice(e.target.value)}
+                      placeholder="e.g. 2499"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-orange-500 text-slate-800"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="block text-[9px] font-black text-slate-455 uppercase tracking-wider">Starting Stock</label>
+                    <input
+                      type="number"
+                      value={regProductStock}
+                      onChange={(e) => setRegProductStock(e.target.value)}
+                      placeholder="10"
+                      className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-orange-500 text-slate-805"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {registerStep === 4 && (
-            <div className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Operating Business Hours</label>
-                <input
-                  type="text"
-                  value={regHours}
-                  onChange={(e) => setRegHours(e.target.value)}
-                  placeholder="e.g. 09:00 AM - 08:00 PM (Mon-Sun)"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 text-slate-850"
-                />
-              </div>
+          {/* Form Actions */}
+          <div className="pt-6 border-t border-slate-100 flex justify-between items-center">
+            <button
+              type="button"
+              onClick={() => { setRegisterType(null); }}
+              className="text-xs text-slate-400 hover:text-slate-600 font-bold"
+            >
+              Cancel Registration
+            </button>
+            <button
+              type="submit"
+              className={`px-6 py-3 text-white text-xs font-black rounded-xl shadow-md transition-all uppercase tracking-wider cursor-pointer ${registerType === 'service' ? 'bg-indigo-650 hover:bg-indigo-700' : 'bg-orange-600 hover:bg-orange-700'}`}
+            >
+              Publish Partner Profile 🚀
+            </button>
+          </div>
 
-              <div className="space-y-1.5">
-                <label className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Core Services Offered (Comma Separated)</label>
-                <textarea
-                  rows={3}
-                  value={regServicesText}
-                  onChange={(e) => setRegServicesText(e.target.value)}
-                  placeholder="e.g. Local House Shifting, Warehouse Packing, Office Relocations, GPS Vehicle Shifting"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:border-indigo-600 text-slate-850 leading-relaxed"
-                />
-                <span className="text-[9px] text-slate-400 font-bold block pt-1">
-                  Separate each specialty with a comma to display clean checkboxes on your detailed page.
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Wizard Controls */}
-        <div className="flex justify-between items-center border-t border-slate-100 pt-5">
-          {registerStep > 1 ? (
-            <button
-              onClick={handleBack}
-              className="px-5 py-2.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
-            >
-              Back Step
-            </button>
-          ) : (
-            <button
-              onClick={() => setActiveView('home')}
-              className="px-5 py-2.5 text-slate-400 hover:text-slate-600 text-xs font-bold cursor-pointer"
-            >
-              Cancel
-            </button>
-          )}
-
-          {registerStep < 4 ? (
-            <button
-              onClick={handleNext}
-              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-sm"
-            >
-              Next Step
-            </button>
-          ) : (
-            <button
-              onClick={handleCreateProfile}
-              className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold rounded-xl transition-all cursor-pointer shadow-sm"
-            >
-              Create Business Profile 🚀
-            </button>
-          )}
-        </div>
+        </form>
       </div>
     );
   };
@@ -1631,10 +3213,10 @@ export default function UserWebsite() {
             {/* Go to Business Panel Action Button */}
             <div className="shrink-0">
               <Link
-                href="/business-panel"
+                href={currentUser.businessType === 'vendor' ? "/vendor-panel" : "/business-panel"}
                 className="inline-flex items-center gap-2 px-5 py-3 bg-indigo-650 hover:bg-indigo-700 text-white text-xs font-black rounded-xl transition-all shadow-md shadow-indigo-900/30 hover:scale-102 cursor-pointer border border-indigo-500/30"
               >
-                <span>Go to Business Panel</span>
+                <span>{currentUser.businessType === 'vendor' ? "Go to Vendor Panel" : "Go to Business Panel"}</span>
                 <span className="text-sm">⚡</span>
               </Link>
             </div>
@@ -1905,6 +3487,18 @@ export default function UserWebsite() {
             </div>
 
             <div className="flex items-center gap-3">
+              <button 
+                onClick={() => setIsCartOpen(!isCartOpen)}
+                className="p-2 bg-slate-55 rounded-full border border-slate-200 text-slate-650 hover:text-orange-600 transition-all cursor-pointer relative"
+              >
+                <ShoppingCart className="w-4 h-4" />
+                {cart.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[8px] font-bold rounded-full flex items-center justify-center">
+                    {cart.reduce((sum, item) => sum + item.quantity, 0)}
+                  </span>
+                )}
+              </button>
+
               <button className="p-2 bg-slate-50 rounded-full border border-slate-200 text-slate-650 hover:text-rose-500 transition-all cursor-pointer relative">
                 <Heart className="w-4 h-4" />
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center">3</span>
@@ -1968,68 +3562,119 @@ export default function UserWebsite() {
             {/* Besa Style Hero Section (Category Sidebar + Interactive Carousel) */}
             <div className="flex flex-col lg:flex-row gap-6">
               {/* Left Categories Sidebar (Departments) */}
-              <div className="w-full lg:w-64 bg-white border border-slate-200 rounded-2xl overflow-hidden shrink-0 shadow-2xs self-start">
-                <div className="bg-slate-900 text-white font-extrabold text-xs px-4 py-3.5 uppercase tracking-wider flex items-center gap-2">
-                  <Grid className="w-4 h-4 text-orange-500" />
-                  <span>All Categories</span>
+              <div className="w-full lg:w-68 bg-white border border-slate-200 rounded-2xl overflow-hidden shrink-0 shadow-xs flex flex-col h-[50vh]">
+                <div className="bg-slate-900 text-white font-extrabold text-[11px] px-4.5 py-4 uppercase tracking-wider flex items-center justify-between border-b border-slate-800 shrink-0">
+                  <div className="flex items-center gap-2">
+                    <Grid className="w-4 h-4 text-orange-500" />
+                    <span>Browse Departments</span>
+                  </div>
+                  <span className="text-[8px] bg-indigo-500/20 text-indigo-300 font-extrabold px-2 py-0.5 rounded">Hub</span>
                 </div>
-                <nav className="divide-y divide-slate-100 text-xs font-semibold text-slate-650">
-                  {categoryList.map((cat) => {
-                    const isActive = filterCategory === cat.name;
-                    return (
-                      <button
-                        key={cat.name}
-                        onClick={() => {
-                          setFilterCategory(cat.name);
-                          setActiveView('all-businesses');
-                        }}
-                        className={`w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-all text-left ${isActive ? 'bg-orange-55 text-orange-600 font-bold border-l-2 border-orange-500' : 'text-slate-700'
-                          }`}
-                      >
-                        <span className="flex items-center gap-2.5">
-                          <span>{cat.icon}</span>
-                          <span>{cat.name}</span>
-                        </span>
-                        <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                      </button>
-                    );
-                  })}
-                  {/* Extra departments to make it feel full like Besa */}
+
+                {/* Sidebar category tabs switcher */}
+                <div className="grid grid-cols-2 gap-1 p-2 bg-slate-50 border-b border-slate-100 shrink-0">
                   <button
-                    onClick={() => {
-                      setFilterCategory('Courier Services');
-                      setActiveView('all-businesses');
-                    }}
-                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-55 transition-all text-left text-slate-400 italic"
+                    type="button"
+                    onClick={() => setActiveCategoryTab('services')}
+                    className={`py-2 text-[9px] uppercase tracking-wider font-black rounded-lg transition-all text-center cursor-pointer ${activeCategoryTab === 'services'
+                        ? 'bg-indigo-600 text-white shadow-sm'
+                        : 'text-slate-655 hover:text-slate-950 hover:bg-slate-200/50'
+                      }`}
                   >
-                    <span className="flex items-center gap-2.5"><span>🚚</span><span>Courier & Cargo</span></span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
+                    🛠️ Services
                   </button>
                   <button
-                    onClick={() => {
-                      setFilterCategory('Beauty Parlours');
-                      setActiveView('all-businesses');
-                    }}
-                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-55 transition-all text-left text-slate-400 italic"
+                    type="button"
+                    onClick={() => setActiveCategoryTab('products')}
+                    className={`py-2 text-[9px] uppercase tracking-wider font-black rounded-lg transition-all text-center cursor-pointer ${activeCategoryTab === 'products'
+                        ? 'bg-orange-600 text-white shadow-sm'
+                        : 'text-slate-655 hover:text-slate-950 hover:bg-slate-200/50'
+                      }`}
                   >
-                    <span className="flex items-center gap-2.5"><span>💇‍♀️</span><span>Beauty & Spas</span></span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
+                    🛒 Products
                   </button>
-                  <button
-                    onClick={() => {
-                      setFilterCategory('Gyms & Fitness');
-                      setActiveView('all-businesses');
-                    }}
-                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-55 transition-all text-left text-slate-400 italic"
-                  >
-                    <span className="flex items-center gap-2.5"><span>🏋️‍♂️</span><span>Gyms & Fitness</span></span>
-                    <ChevronRight className="w-3.5 h-3.5 text-slate-300" />
-                  </button>
-                </nav>
+                </div>
+
+                <div className="p-3.5 space-y-4 overflow-y-auto flex-1">
+                  {activeCategoryTab === 'services' ? (
+                    <div className="space-y-1.5">
+                      <span className="text-[9px] font-black text-indigo-650 uppercase tracking-widest block px-2.5">
+                        🛠️ Services Directories
+                      </span>
+                      <nav className="space-y-0.5 text-xs font-semibold">
+                        {[
+                          { name: 'Packers & Movers', icon: '📦' },
+                          { name: 'Dentists', icon: '🦷' },
+                          { name: 'Hotels', icon: '🏨' },
+                          { name: 'Restaurants', icon: '🥗' },
+                          { name: 'Beauty Parlours', icon: '💄' },
+                          { name: 'Gyms & Fitness', icon: '🏋️‍♂️' }
+                        ].map((cat) => {
+                          const isActive = filterCategory === cat.name;
+                          return (
+                            <button
+                              key={cat.name}
+                              onClick={() => {
+                                setFilterCategory(cat.name);
+                                setActiveView('all-businesses');
+                              }}
+                              className={`w-full flex items-center justify-between px-2.5 py-2 hover:bg-slate-50 transition-all rounded-lg text-left ${isActive
+                                  ? 'bg-indigo-50 text-indigo-700 font-bold border-l-2 border-indigo-600'
+                                  : 'text-slate-655'
+                                }`}
+                            >
+                              <span className="flex items-center gap-2.5">
+                                <span className="text-sm">{cat.icon}</span>
+                                <span className="truncate max-w-[130px]">{cat.name}</span>
+                              </span>
+                              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                            </button>
+                          );
+                        })}
+                      </nav>
+                    </div>
+                  ) : (
+                    <div className="space-y-1.5">
+                      <span className="text-[9px] font-black text-orange-655 uppercase tracking-widest block px-2.5">
+                        🛒 Product Marketplaces
+                      </span>
+                      <nav className="space-y-0.5 text-xs font-semibold">
+                        {[
+                          { name: 'Electronic Goods Dealers', icon: '🔌', label: 'Electronics & Tools' },
+                          { name: 'Apparel & Clothing', icon: '👕', label: 'Apparel & Fashion' },
+                          { name: 'Home decor & Furniture', icon: '🪑', label: 'Decor & Furniture' },
+                          { name: 'Beauty & Cosmetics', icon: '💅', label: 'Beauty & Cosmetics' },
+                          { name: 'Sports & Fitness Goods', icon: '⚽', label: 'Sports & Fitness' }
+                        ].map((cat) => {
+                          const isActive = filterCategory === cat.name;
+                          return (
+                            <button
+                              key={cat.name}
+                              onClick={() => {
+                                setFilterCategory(cat.name);
+                                setActiveView('all-businesses');
+                              }}
+                              className={`w-full flex items-center justify-between px-2.5 py-2 hover:bg-slate-50 transition-all rounded-lg text-left ${isActive
+                                  ? 'bg-orange-50 text-orange-700 font-bold border-l-2 border-orange-500'
+                                  : 'text-slate-655'
+                                }`}
+                            >
+                              <span className="flex items-center gap-2.5">
+                                <span className="text-sm">{cat.icon}</span>
+                                <span className="truncate max-w-[130px]">{cat.label || cat.name}</span>
+                              </span>
+                              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                            </button>
+                          );
+                        })}
+                      </nav>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Right Interactive Carousel Slider with Smooth Transitions */}
-              <div className="flex-1 relative overflow-hidden bg-slate-950 border border-slate-200 rounded-2xl h-[380px] shadow-2xs group flex flex-col justify-between text-left">
+              <div className="flex-1 relative overflow-hidden bg-slate-950 border border-slate-200 rounded-2xl h-[50vh] shadow-sm group flex flex-col justify-between text-left">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeSlide}
@@ -2041,26 +3686,31 @@ export default function UserWebsite() {
                   >
                     <img
                       src={carouselSlides[activeSlide].image}
-                      className="w-full h-full object-cover select-none"
+                      className="w-full h-full object-cover select-none transform hover:scale-103 transition-transform duration-7000"
                       alt=""
                     />
                     {/* Bottom-to-top linear gradient dark overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent z-10" />
 
                     {/* Text positioned in left bottom corner */}
-                    <div className="absolute bottom-8 left-8 right-8 z-20 space-y-2.5 text-white max-w-lg">
-                      <span className="inline-block text-[9px] bg-orange-500 text-white font-extrabold px-3 py-1 rounded-sm uppercase tracking-widest">
-                        {carouselSlides[activeSlide].tag}
-                      </span>
-                      <h2 className="text-xl md:text-3xl font-extrabold leading-tight text-white">
+                    <div className="absolute bottom-8 left-8 right-8 z-20 space-y-3.5 text-white max-w-lg">
+                      <div className="flex gap-2">
+                        <span className="inline-block text-[9px] bg-orange-500 text-white font-extrabold px-3 py-1 rounded-sm uppercase tracking-widest">
+                          {carouselSlides[activeSlide].tag}
+                        </span>
+                        <span className="inline-block text-[9px] bg-indigo-600 text-white font-extrabold px-3 py-1 rounded-sm uppercase tracking-widest">
+                          ★ 4.9 Rated
+                        </span>
+                      </div>
+                      <h2 className="text-xl md:text-3xl font-extrabold leading-tight text-white tracking-tight">
                         {carouselSlides[activeSlide].title}
                       </h2>
-                      <p className="text-xs text-slate-200 font-medium">
+                      <p className="text-xs text-slate-200 font-semibold leading-relaxed">
                         {carouselSlides[activeSlide].offer}
                       </p>
                       <button
                         onClick={() => setSelectedCategory(carouselSlides[activeSlide].categoryLink)}
-                        className="inline-flex px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-extrabold rounded-xs uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-orange-500/20"
+                        className="inline-flex px-5 py-2.5 bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-extrabold rounded-xs uppercase tracking-wider transition-all cursor-pointer shadow-md shadow-orange-500/20 active:scale-95"
                       >
                         {carouselSlides[activeSlide].buttonText}
                       </button>
@@ -2070,12 +3720,14 @@ export default function UserWebsite() {
 
                 {/* Left and Right navigation buttons */}
                 <button
+                  type="button"
                   onClick={() => setActiveSlide(prev => (prev - 1 + carouselSlides.length) % carouselSlides.length)}
                   className="absolute left-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 border border-slate-200 flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-105 transition-all shadow-sm z-30 cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
+                  type="button"
                   onClick={() => setActiveSlide(prev => (prev + 1) % carouselSlides.length)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 border border-slate-200 flex items-center justify-center text-slate-700 opacity-0 group-hover:opacity-100 hover:bg-white hover:scale-105 transition-all shadow-sm z-30 cursor-pointer"
                 >
@@ -2096,7 +3748,7 @@ export default function UserWebsite() {
               </div>
 
               {/* Right Premium Business Section (Hero Sidebar Column) */}
-              <div className="w-full lg:w-80 bg-white border border-slate-200 rounded-2xl p-5 shrink-0 shadow-2xs self-stretch flex flex-col justify-between text-left">
+              <div className="w-full lg:w-80 bg-white border border-slate-200 rounded-2xl p-5 shrink-0 shadow-2xs h-[50vh] flex flex-col justify-between text-left">
                 <div className="space-y-4">
                   <div className="flex justify-between items-center pb-2 border-b border-slate-100">
                     <h4 className="text-xs font-black uppercase tracking-wider text-slate-905 flex items-center gap-1.5">
@@ -2202,35 +3854,74 @@ export default function UserWebsite() {
             </div>
 
             {/* Popular Categories Grid (Mockup Style) */}
-            <div className="space-y-4 text-left">
-              <div className="flex justify-between items-center">
-                <h3 className="font-extrabold text-slate-900 text-lg tracking-tight">Popular categories</h3>
-                <button
-                  onClick={() => {
-                    setFilterCategory('All');
-                    setActiveView('all-businesses');
-                  }}
-                  className="text-xs font-semibold text-slate-500 hover:text-indigo-650 hover:underline"
-                >
-                  View All Categories
-                </button>
+            <div className="space-y-6 text-left">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-4">
+                <div className="space-y-1">
+                  <h3 className="font-extrabold text-slate-900 text-lg tracking-tight">Popular categories</h3>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Explore top rated listings by category</p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 sm:ml-auto">
+                  {/* Dynamic Category Tabs */}
+                  <div className="flex gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200/40 shadow-3xs">
+                    <button
+                      type="button"
+                      onClick={() => setActiveCategoryTab('services')}
+                      className={`px-4 py-2 text-[10px] uppercase tracking-wider font-black rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${activeCategoryTab === 'services'
+                          ? 'bg-indigo-600 text-white shadow-sm'
+                          : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/50'
+                        }`}
+                    >
+                      🛠️ Services
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveCategoryTab('products')}
+                      className={`px-4 py-2 text-[10px] uppercase tracking-wider font-black rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${activeCategoryTab === 'products'
+                          ? 'bg-orange-600 text-white shadow-sm'
+                          : 'text-slate-600 hover:text-slate-950 hover:bg-slate-200/50'
+                        }`}
+                    >
+                      🛒 Products
+                    </button>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFilterCategory('All');
+                      setActiveView('all-businesses');
+                    }}
+                    className="text-xs font-extrabold text-indigo-600 hover:text-indigo-700 bg-indigo-50/70 hover:bg-indigo-100/80 px-3.5 py-2 rounded-xl transition-all border border-indigo-100 cursor-pointer"
+                  >
+                    View All Categories
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {[
-                  { name: 'Packers & Movers', icon: '📦' },
-                  { name: 'Dentists', icon: '🦷' },
-                  { name: 'Hotels', icon: '🏨' },
-                  { name: 'Restaurants', icon: '🥗' },
-                  { name: 'Electronic Goods Dealers', icon: '🔌' },
-                  { name: 'Courier Services', icon: '🚚' },
-                  { name: 'Beauty Parlours', icon: '💄' },
-                  { name: 'Gyms & Fitness', icon: '🏋️‍♂️' },
-                  { name: 'Home Cleaning', icon: '🧹' },
-                  { name: 'Event Planners', icon: '🎉' },
-                  { name: 'Car Garages', icon: '🚗' },
-                  { name: 'IT & Repairs', icon: '💻' }
-                ].map((cat, idx) => {
+                {(activeCategoryTab === 'services'
+                  ? [
+                    { name: 'Packers & Movers', icon: '📦' },
+                    { name: 'Dentists', icon: '🦷' },
+                    { name: 'Hotels', icon: '🏨' },
+                    { name: 'Restaurants', icon: '🥗' },
+                    { name: 'Courier Services', icon: '🚚' },
+                    { name: 'Beauty Parlours', icon: '💄' },
+                    { name: 'Gyms & Fitness', icon: '🏋️‍♂️' },
+                    { name: 'Home Cleaning', icon: '🧹' },
+                    { name: 'Event Planners', icon: '🎉' },
+                    { name: 'Car Garages', icon: '🚗' },
+                    { name: 'IT & Repairs', icon: '💻' }
+                  ]
+                  : [
+                    { name: 'Electronic Goods Dealers', icon: '🔌' },
+                    { name: 'Apparel & Clothing', icon: '👕' },
+                    { name: 'Home decor & Furniture', icon: '🪑' },
+                    { name: 'Beauty & Cosmetics', icon: '💅' },
+                    { name: 'Sports & Fitness Goods', icon: '⚽' }
+                  ]
+                ).map((cat, idx) => {
                   const isActive = filterCategory === cat.name;
                   return (
                     <button
@@ -2240,7 +3931,9 @@ export default function UserWebsite() {
                         setActiveView('all-businesses');
                       }}
                       className={`flex flex-col items-center justify-between p-4 rounded-xl border transition-all h-28 cursor-pointer ${isActive
-                        ? 'bg-orange-50 border-orange-400 text-orange-700 font-bold scale-102 shadow-2xs'
+                        ? activeCategoryTab === 'services'
+                          ? 'bg-indigo-50 border-indigo-400 text-indigo-700 font-bold scale-102 shadow-2xs'
+                          : 'bg-orange-50 border-orange-400 text-orange-700 font-bold scale-102 shadow-2xs'
                         : 'bg-white border-slate-200/80 hover:bg-slate-50 hover:border-slate-350 text-slate-800'
                         }`}
                     >
@@ -2256,10 +3949,90 @@ export default function UserWebsite() {
               </div>
             </div>
 
-            {/* 5 Auto-Scrolling Business Carousels */}
-            <div className="space-y-8">
+            {/* Dynamic Mixed Carousels & Promotional Banners */}
+            <div className="space-y-10">
               <AutoScrollCarousel
-                title="Top Businesses"
+                title="⚡ Top Verified Local Services"
+                items={businesses.filter(b => b.businessType === 'service')}
+                setInquiryBiz={handleInquireClick}
+                setSelectedBiz={setSelectedBiz}
+                setActiveView={setActiveView}
+              />
+
+              {/* Side-by-Side Dual Hub Banners */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Services Promo Card */}
+                <div className="bg-gradient-to-br from-indigo-950 via-slate-900 to-indigo-950 text-white p-6 rounded-2xl flex flex-col justify-between h-48 text-left shadow-xs border border-indigo-900/30">
+                  <div className="space-y-1.5">
+                    <span className="text-[8px] bg-indigo-500/20 text-indigo-300 font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider w-fit block">
+                      Services Directory
+                    </span>
+                    <h4 className="text-base font-black tracking-tight leading-tight">Need a Local Professional?</h4>
+                    <p className="text-[10px] text-slate-350 font-semibold leading-normal">
+                      Hire background-checked packers & movers, root canal dentists, hotels, cleaning experts, and repair technicians.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setActiveCategoryTab('services'); setFilterCategory('All'); setActiveView('all-businesses'); }}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black rounded-lg transition-all w-fit shadow-xs cursor-pointer uppercase tracking-wider"
+                  >
+                    Find Services
+                  </button>
+                </div>
+
+                {/* Products Promo Card */}
+                <div className="bg-gradient-to-br from-orange-950 via-slate-900 to-orange-950 text-white p-6 rounded-2xl flex flex-col justify-between h-48 text-left shadow-xs border border-orange-900/30">
+                  <div className="space-y-1.5">
+                    <span className="text-[8px] bg-orange-500/20 text-orange-350 font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider w-fit block">
+                      Product Storefronts
+                    </span>
+                    <h4 className="text-base font-black tracking-tight leading-tight">Direct Wholesalers & Sellers</h4>
+                    <p className="text-[10px] text-slate-355 font-semibold leading-normal">
+                      Shop premium electronics, apparel, clothing, home decor items, and sports fitness gear directly from local vendors.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => { setActiveCategoryTab('products'); setFilterCategory('All'); setActiveView('all-businesses'); }}
+                    className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-[10px] font-black rounded-lg transition-all w-fit shadow-xs cursor-pointer uppercase tracking-wider"
+                  >
+                    Shop Products
+                  </button>
+                </div>
+              </div>
+
+              <AutoScrollCarousel
+                title="🛍️ E-commerce Product Sellers"
+                items={businesses.filter(b => b.businessType === 'vendor')}
+                setInquiryBiz={handleInquireClick}
+                setSelectedBiz={setSelectedBiz}
+                setActiveView={setActiveView}
+              />
+
+              {/* Full Width Platform Promotion Banner */}
+              <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 text-left shadow-xs border border-indigo-950 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl select-none pointer-events-none" />
+                <div className="space-y-1.5 max-w-2xl z-10">
+                  <span className="text-[8px] bg-indigo-500/20 text-indigo-300 font-extrabold px-2 py-0.5 rounded uppercase tracking-wider w-fit block">
+                    Meganods Pro Club Onboarding
+                  </span>
+                  <h4 className="text-lg font-black tracking-tight leading-tight">List Your Business Storefront or Service Console Online</h4>
+                  <p className="text-[10px] text-slate-300 font-semibold leading-relaxed">
+                    Access premium dashboard metrics, resolve custom leads, response to verified client reviews, and rank first in search results.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => { setRegisterStep(1); setActiveView('register'); }}
+                  className="px-5 py-3 bg-white text-slate-900 hover:bg-slate-50 text-[10px] font-black rounded-xl transition-all cursor-pointer shadow-md uppercase tracking-wider whitespace-nowrap shrink-0 z-10"
+                >
+                  Create Profile Now 🚀
+                </button>
+              </div>
+
+              <AutoScrollCarousel
+                title="🔥 Popular Local Deals (Mixed Marketplace)"
                 items={businesses}
                 setInquiryBiz={handleInquireClick}
                 setSelectedBiz={setSelectedBiz}
@@ -2267,34 +4040,42 @@ export default function UserWebsite() {
               />
 
               <AutoScrollCarousel
-                title="Premium Partners"
+                title="⭐ Premium Verified Members"
                 items={businesses.filter(b => b.status === 'Premium' || b.status === 'Featured')}
                 setInquiryBiz={handleInquireClick}
                 setSelectedBiz={setSelectedBiz}
                 setActiveView={setActiveView}
               />
 
-              <AutoScrollCarousel
-                title="Highly Rated Services"
-                items={[...businesses].sort((a, b) => b.rating - a.rating)}
-                setInquiryBiz={handleInquireClick}
-                setSelectedBiz={setSelectedBiz}
+              <ProductCarousel
+                title="🔌 Trending Smart Gadgets"
+                products={mockProductsList.filter(p => p.category === 'electronics')}
+                layoutType="tech"
+                setSelectedProduct={setSelectedProduct}
                 setActiveView={setActiveView}
               />
 
-              <AutoScrollCarousel
-                title="Trending Deals & Offers"
-                items={businesses.filter(b => b.subscription === 'Platinum' || b.subscription === 'Gold')}
-                setInquiryBiz={handleInquireClick}
-                setSelectedBiz={setSelectedBiz}
+              <ProductCarousel
+                title="👕 Summer Fashion & Apparel"
+                products={mockProductsList.filter(p => p.category === 'fashion')}
+                layoutType="minimalist"
+                setSelectedProduct={setSelectedProduct}
                 setActiveView={setActiveView}
               />
 
-              <AutoScrollCarousel
-                title="Newly Verified Listings"
-                items={businesses.slice().reverse()}
-                setInquiryBiz={handleInquireClick}
-                setSelectedBiz={setSelectedBiz}
+              <ProductCarousel
+                title="🪑 Modern Home Decor & Furniture"
+                products={mockProductsList.filter(p => p.category === 'decor')}
+                layoutType="glassmorphic"
+                setSelectedProduct={setSelectedProduct}
+                setActiveView={setActiveView}
+              />
+
+              <ProductCarousel
+                title="⚽ Sports & Fitness Gear"
+                products={mockProductsList.filter(p => p.category === 'fitness')}
+                layoutType="landscape"
+                setSelectedProduct={setSelectedProduct}
                 setActiveView={setActiveView}
               />
             </div>
@@ -2305,6 +4086,8 @@ export default function UserWebsite() {
 
         {activeView === 'detail' && renderBusinessDetail()}
 
+        {activeView === 'product-detail' && renderProductDetail()}
+
         {activeView === 'inquiry-chat' && renderInquiryChat()}
 
         {activeView === 'signin' && renderSignIn()}
@@ -2312,6 +4095,8 @@ export default function UserWebsite() {
         {activeView === 'register' && renderRegisterWizard()}
 
         {activeView === 'my-profile' && renderMyProfile()}
+
+        {activeView === 'checkout' && renderCheckoutWizard()}
 
         {/* Bottom Trust Indicators bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-white p-6 rounded-[24px] border border-slate-200/80 shadow-2xs text-left">
@@ -2621,6 +4406,152 @@ export default function UserWebsite() {
                     <Send className="w-3.5 h-3.5" /> <span>Deploy Live Review</span>
                   </button>
                 </form>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Sliding Cart Sidebar Drawer */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsCartOpen(false)}
+              className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 cursor-pointer"
+            />
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl z-50 flex flex-col justify-between border-l border-slate-200 text-left"
+            >
+              {/* Header */}
+              <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <ShoppingCart className="w-5 h-5 text-orange-600" />
+                  <h3 className="font-extrabold text-slate-800 text-base">Your Cart</h3>
+                  <span className="text-[10px] bg-orange-50 border border-orange-200 text-orange-700 px-2.5 py-0.5 rounded-full font-black">
+                    {cart.reduce((sum, item) => sum + item.quantity, 0)} Items
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsCartOpen(false)}
+                  className="p-1.5 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-700 transition-all cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Items List */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-4">
+                {cart.length === 0 ? (
+                  <div className="h-full flex flex-col items-center justify-center text-center space-y-4 py-12">
+                    <span className="text-5xl select-none">🛒</span>
+                    <h4 className="font-black text-slate-800 text-sm">Your cart is empty</h4>
+                    <p className="text-[10px] text-slate-450 font-semibold max-w-xs leading-relaxed">
+                      Add products from our product directories or minimalist, glassmorphic, tech, and landscape carousels.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCartOpen(false);
+                        setActiveView('all-businesses');
+                        setFilterCategory('All');
+                        setActiveCategoryTab('products');
+                      }}
+                      className="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-[10px] font-black rounded-lg uppercase tracking-wider shadow-xs shadow-orange-500/10 cursor-pointer"
+                    >
+                      Browse Marketplace
+                    </button>
+                  </div>
+                ) : (
+                  cart.map((item) => {
+                    return (
+                      <div key={item.product.id} className="flex gap-4 p-3 bg-slate-50 border border-slate-200 rounded-xl relative group">
+                        <div className="w-16 h-16 bg-slate-100 rounded-lg overflow-hidden shrink-0 border border-slate-200">
+                          <img src={item.product.image} className="w-full h-full object-cover" alt="" />
+                        </div>
+                        <div className="flex-1 min-w-0 flex flex-col justify-between">
+                          <div>
+                            <h5 className="font-extrabold text-[11px] text-slate-800 truncate leading-tight">{item.product.name}</h5>
+                            <span className="text-[8px] text-slate-400 font-bold uppercase tracking-wider block mt-0.5">{item.product.vendorName}</span>
+                          </div>
+                          <div className="flex items-center justify-between mt-2">
+                            <div className="flex items-baseline gap-1.5">
+                              <span className="text-[11px] font-black text-slate-900">₹{item.product.price.toLocaleString()}</span>
+                              <span className="text-[8px] text-slate-400 line-through">₹{item.product.originalPrice.toLocaleString()}</span>
+                            </div>
+                            {/* Quantity Controls */}
+                            <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-1.5 py-0.5 shadow-3xs">
+                              <button
+                                type="button"
+                                onClick={() => updateCartQty(item.product.id, item.quantity - 1)}
+                                className="p-0.5 hover:bg-slate-100 rounded-md text-slate-550 hover:text-slate-850 cursor-pointer"
+                              >
+                                <Minus className="w-3 h-3" />
+                              </button>
+                              <span className="text-[10px] font-black text-slate-800 w-4 text-center select-none">{item.quantity}</span>
+                              <button
+                                type="button"
+                                onClick={() => updateCartQty(item.product.id, item.quantity + 1)}
+                                className="p-0.5 hover:bg-slate-100 rounded-md text-slate-550 hover:text-slate-850 cursor-pointer"
+                              >
+                                <Plus className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeFromCart(item.product.id)}
+                          className="absolute top-2 right-2 p-1 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-lg transition-all cursor-pointer opacity-0 group-hover:opacity-100"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+
+              {/* Footer */}
+              {cart.length > 0 && (
+                <div className="p-5 border-t border-slate-100 bg-slate-50/50 space-y-4">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-extrabold text-slate-500 uppercase tracking-wider">Subtotal:</span>
+                    <span className="font-black text-slate-900 text-sm">
+                      ₹{cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsCartOpen(false)}
+                      className="py-2.5 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-[10px] font-black rounded-lg uppercase tracking-wider transition-all cursor-pointer text-center"
+                    >
+                      Keep Shopping
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCartOpen(false);
+                        setCheckoutStep(1);
+                        setActiveView('checkout');
+                      }}
+                      className="py-2.5 bg-orange-600 hover:bg-orange-700 text-white text-[10px] font-black rounded-lg uppercase tracking-wider transition-all shadow-xs shadow-orange-500/10 cursor-pointer text-center"
+                    >
+                      Checkout Now
+                    </button>
+                  </div>
+                </div>
               )}
             </motion.div>
           </>

@@ -11,8 +11,9 @@ export interface Business {
     locality: string;
     address: string;
   };
-  status: 'Pending' | 'Verified' | 'Suspended' | 'Featured' | 'Premium';
+  status: 'Pending' | 'Verified' | 'Suspended' | 'Featured' | 'Premium' | 'Blocked';
   subscription: 'Free' | 'Silver' | 'Gold' | 'Platinum';
+  businessType?: 'service' | 'vendor';
   rating: number;
   leadsCount: number;
   createdDate: string;
@@ -118,6 +119,7 @@ export const initialBusinesses: Business[] = [
     },
     status: 'Premium',
     subscription: 'Platinum',
+    businessType: 'service',
     rating: 4.8,
     leadsCount: 154,
     createdDate: '2026-01-10',
@@ -148,6 +150,7 @@ export const initialBusinesses: Business[] = [
     },
     status: 'Verified',
     subscription: 'Gold',
+    businessType: 'service',
     rating: 4.6,
     leadsCount: 89,
     createdDate: '2026-02-15',
@@ -178,6 +181,7 @@ export const initialBusinesses: Business[] = [
     },
     status: 'Featured',
     subscription: 'Platinum',
+    businessType: 'service',
     rating: 4.9,
     leadsCount: 312,
     createdDate: '2025-11-20',
@@ -208,6 +212,7 @@ export const initialBusinesses: Business[] = [
     },
     status: 'Pending',
     subscription: 'Free',
+    businessType: 'vendor',
     rating: 4.2,
     leadsCount: 14,
     createdDate: '2026-06-10',
@@ -238,6 +243,7 @@ export const initialBusinesses: Business[] = [
     },
     status: 'Suspended',
     subscription: 'Silver',
+    businessType: 'vendor',
     rating: 3.5,
     leadsCount: 45,
     createdDate: '2025-08-05',

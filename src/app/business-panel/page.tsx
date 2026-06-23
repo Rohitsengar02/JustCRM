@@ -406,7 +406,7 @@ export default function BusinessPanel() {
             </span>
             <div className="min-w-0">
               <h2 className="text-xs font-black text-slate-900 truncate leading-tight uppercase tracking-wider">{businessUser.name}</h2>
-              <span className="text-[8px] text-slate-500 font-extrabold uppercase tracking-widest block mt-0.5">{businessUser.category} • Premium Gold Partner</span>
+              <span className="text-[8px] text-slate-500 font-extrabold uppercase tracking-widest block mt-0.5">{businessUser.category} • Service Provider Panel</span>
             </div>
           </div>
           <div className="flex gap-2">
@@ -751,7 +751,7 @@ export default function BusinessPanel() {
             <div className="flex items-center gap-2.5">
               <span className="text-3xl p-1 bg-white/10 rounded-xl backdrop-blur-md">{businessUser.logo}</span>
               <div>
-                <span className="text-[10px] text-slate-400 font-extrabold tracking-widest uppercase">Welcome Back 👋</span>
+                <span className="text-[10px] text-indigo-300 font-extrabold tracking-widest uppercase flex items-center gap-1">🛠️ Service Partner Console</span>
                 <h1 className="text-xl font-black text-white tracking-tight">{businessUser.name}</h1>
               </div>
             </div>
